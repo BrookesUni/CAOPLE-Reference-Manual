@@ -1,0 +1,1884 @@
+
+\documentclass[english]{report}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{xcolor}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{fancybox}
+\usepackage{calc}
+
+\makeatletter
+
+\newcommand{\tab}{\hspace*{0.5cm}}
+\newcommand{\choice}{\color{red} \textbf{ | } \color{black}}
+\newcommand{\defs}{\color{red}\textbf{::=}\color{black}}
+\newcommand{\opt}[1]{\color{red} \textbf{[} \color{black} #1 \color{red} \textbf{]} \color{black}}
+\newcommand{\tml}[1]{\color{blue}$\langle$#1$\rangle$\color{black}}
+\newcommand{\rpt}[1]{\color{red} \textbf{\{} \color{black} #1 \color{red} \textbf{\}} \color{black}}
+\newcommand{\rptn}[1]{\color{red} \textbf{\{} \color{black} #1 \color{red}\textbf{\}$^+$} \color{black}}
+\newcommand{\lit}[1]{\color{red} \textbf{"}\color{blue}#1\color{red}\textbf{"} \color{black}}
+
+\newcommand{\JavaCCsyntax}[1]{%
+	\vspace{2mm}
+	{\color{black}
+	\noindent{
+		\framebox{
+			\begin{minipage}[t]{1\columnwidth-3mm}
+				{ #1 }
+			\end{minipage}}}}
+	\vspace{2mm}}
+		
+\newcommand{\example}[1]{%
+    \vspace{2mm}
+    \noindent{%
+    \cornersize*{3mm}
+    \ovalbox{\begin{minipage}[t]{1\columnwidth - 3mm}%
+    {#1}
+    \end{minipage}}}
+    \vspace{2mm}}
+    
+\newcommand{\comment}[1]{
+   \marginpar{
+   \flushleft{
+   \footnotesize{
+   \textit{\color{red} 
+   #1 
+   }}}}}
+
+\makeatother
+
+\usepackage{babel}
+
+\begin{document}
+
+
+\title{Reference Manual \\
+for \\
+Programming Language CAOPLE\\
+%{\normalsize (Version 2.0)}
+%{\normalsize (Version 2.1)}
+%{\normalsize (Version 2.2)}
+{\normalsize (Version 2.5)}
+}
+%\date{27 Sept. 2016}
+%\date{Oct. 29, 2016}
+%\date{May 28, 2017}
+%\date{June 12, 2017}
+%\date{Nov. 18, 2017}
+%\date{May 10, 2018}
+\date{March 25, 2020}
+
+%Changes of Version 2.3 from Version 2.2: 
+% (1) The till statement is enhanced. 
+% (2) Data type definition and constant definition are allowed to be given inside a caste declaration as local definitions. 
+
+\author{Hong Zhu\footnote{Correspondances should to sent to \emph{Hong Zhu} by email at hzhu@brookes.ac.uk}, Ian Bayley, David Lightfoot, Mark Green and Peter Marshall\\
+Cloud Computing and Cybersecurity Research Group \footnote{Formerly known as the \emph{Applied Formal Methods Research Group}}\\
+School of Engineering, Computing and Mathmatics\\
+Faculty of Technology, Design and Environment\\
+Oxford Brookes University\\
+Oxford, OX33 1HX, UK
+}
+  
+\maketitle
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\tableofcontents
+
+\chapter*{Preface of Version 1}
+\addcontentsline{toc}{chapter}{Preface of Version 1} 
+%\footnote{Some minor revisions have been made for clarification.}
+
+CAOPLE stands for Caste-centric Agent-Oriented Programming Language
+and Environment. It is an experimental programming language developed 
+by the Cloud Computing and Cybersecurity (CCC) Research Group
+\footnote{ Formerly known as the Applied Formal Methods (AFM) Research Group} at the Oxford 
+Brookes University, Oxford, England. It is a part of the research agenda of  
+CCC (AFM) on agent-oriented software development methodology for disciplined 
+software engineering of internet-based computing. 
+
+Agent-orientation is a novel programming paradigm proposed as an 
+alternative to object-orientation. In this paradigm,
+a program during execution time consists of interacting agents rather
+than interacting objects. While agent-orientation inherits a number 
+features from object-orientation, there are several fundamental 
+differences between them. 
+
+One of the key distinction is the mode of interaction.
+An object interacts with another object by sending a message to it.
+That message is guaranteed to cause the object to execute the corresponding
+method. The interaction mechanism is therefore a control mechanism. In contrast, an
+agent interacts with another agent by generating events and processing events. 
+For example, an agent may requesting a service by generating an event, which 
+may or may not be observed by the agent that provides the service. Even if the 
+service provider agent observed the event, it may or may not take the action as 
+requested in response. For example, it may reject the service request due to 
+the request is considered as unauthorised, or simply because the workload on 
+the server is too higher. In other words, the interaction mechanism is a cooperation 
+mechanism. 
+
+Request events may be thought to be analogous to method calls, but they are
+asynchronous, whereas method calls are synchronous. This
+paradigm is particularly suited to distributed computing, where messages
+may not reach their targets. It also suited to parallel computing, where the calling
+object should not suspend while waiting for the callee to finish. In both cases, a 
+message is often to be broadcasted to many receivers as an action can be 
+observed by many other agents rather than as in object oriented where 
+a method call only targets one object. 
+Both of forms of computing have been the subject of intense
+study over the past few decades, but have now become far more important
+with the advent of web services and multi-core computing.
+
+In CAOPLE, each agent is an instance of a caste, which can therefore
+be thought of as a template for creating agents; the relationship
+is analogous to that between objects and classes. The major difference
+between classes and castes though is that an agent can change its
+caste membership during its life-time whereas an object cannot. 
+Many other agent-oriented
+programming languages do not have caste, or anything similar, as a
+classification mechanism so the concept of caste is an important contribution
+by providing a means of modularity. 
+
+Another similarity to object oriented programming languages, CAOPLE is 
+an imperative programming language while most other agent-oriented 
+programming languages are declarative or hybrid (i.e. a combination of 
+imperative and declarative facilities). 
+
+Finally, CAOPLE is a pure agent-oriented programming language, in which 
+a program only contains agents rather than a mixture of agents and 
+objects as many other agent-oriented programming languages. 
+%\comment{Should we mention other agent-oriented programming languages?}
+
+This manual intends to give a brief but comprehensive definition of the language 
+rather than an introduction to agent-oriented programming. 
+
+\chapter*{Preface of Version 2}
+\addcontentsline{toc}{chapter}{Preface of Version 2}
+
+Since the writing of CAOPLE manual version 1 in the summer of 2014, 
+the AOP research team has made substantial progress in the development of the 
+language. The virtual machine CAVM has been redeveloped written in Java and 
+a compiler has also been re-written with JavaCC and Java. An integrated development 
+environment called CIDE has also been developed. As a consequence, the language has 
+changed significantly in its syntax. These changes are now reflected in this version of the
+language manual. 
+
+It is worth noting that during this period of time, the microservices architecture of service-oriented computing 
+has become a hot topic of research and widely accepted by industry for the development of service-oriented systems. 
+Microservices is a software architecture style in which a large complex software application is decomposed into many services, each of small size (hence the word \emph{micro} in its name). These services can be independently deployed to a cluster of computers and duplicated to achieve scalability, load balance and system-performance optimisation. Each micro-service runs in its own process and interacts with other services through lightweight communication mechanisms. In our research paper titled ``\emph{CAOPLE: A Programming Language for Microservices SaaS}'' \footnote{Chengzhi Xu, Hong Zhu, Ian Bayley, David Lightfoot, Mark Green and Peter Marshall, CAOPLE: A Programming Language for Microservices SaaS, in Proceedings of \emph{the 10th IEEE International Conference on Service Oriented System Engineering (SOSE 2016)}, 29 March - 1 April 2016, Oxford, England, UK.  IEEE Computer Society Press, 2016.}, we argued that CAOPLE is particularly suitable for programming software in the microservices architecture. Below we briefly summarise the argument. 
+
+In the literature of service-oriented computing, the word ``service'', and similarly the word ``microservice'', has two meanings. First, a service is the functionality provided by a computer system and delivered to the users; for example, as Singh and Huhns stated \footnote{Singh, P. M., and Huhns, N. M.,  \emph{Service-Oriented Computing: Semantics, Processes, Agents.} Wiley, 2005.}. Second, the word service also refers to the computational entities that provide the services in the first sense. Here, we separate these two concepts by using the word service only to refer to the functionalities that a computational system provides, while the computational entities that provide such functionality are called ``agents''. In other words, agents are service providers. Of course, an agent may well need services from other agents. Thus, they can be, and often are, service requesters, too. 
+
+In the context of the microservices architecture, the word microservice also bears two further meanings: first, a set of microservices can be identical copies of a ``service'', where each copy is a runtime computational entity. Second, given the existence of multiple copies running in a system, a microservice is also referred to as a template from which instances can be generated and deployed to different servers. In our conceptual model, the notion of \emph{caste} captures perfectly the meaning of a template from which runtime instance are instantiated. The implementation of CAOPLE enables that instances of a caste run not just on the same machine, but, as a norm to be run over a computer network. 
+
+Therefore, the notion of agents and their classifier caste provides a perfect conceptual model of microservices. 
+
+Microservices architecture are not easy to develop, deploy and operate because the complexity of the system increases tremendously when it is decomposed into a large number of micro scale services. With the wide acceptance of microservices architecture in industry for cloud computing, container technologies, such as docker, has been developed to support the deployment of software in microservice architecture over a large scale computer network and monitoring the operation of the system. How to develop such systems is still an open problem. CAOPLE addresses this by significantly reducing the complexity of programming distributed systems with a higher level of abstraction and well-defined conceptual model of microservices architecture so that a system in microservices architecture can be represented in a nice model in a natural metaphor. Moreover, its network transparency make the deployment, testing and debugging distributed system less difficult than any existing programming languages. Therefore, CAOPLE as a new programming language providers an alternative approach to the container technology currently used in the industry. In our another research paper, which is titled ``\emph{CIDE: An Integrated Development Environment for Microservices}'' \footnote{Desheng Liu,  Hong Zhu, Chengzhi Xu,  Ian Bayley, David Lightfoot, Mark Green and Peter Marshall, CIDE: An Integrated Development Environment for Microservices, in Proceedings of \emph{2016 IEEE International Conference on Services Computing (SCC 2016)},  27 June - 2 July 2016, San Francisco, CA, USA. IEEE Computer Society Press, 2016.},  we have proposed a new generation of integrated development environment that integrates IDE with new functionalities that are currently offered by deployment and operation tools to enable the so-call \emph{shift-to-the-left} principle of DevOps software development philosophy. A prototype of an IDE for CAOPLE programming language called CIDE has been developed. Our own experiences with writing example codes show that developing distributed and parallel applications in CAOPLE with CIDE can be much easier, faster, and the code is more readable and testable. 
+
+Finally, it is worth noting that CAOPLE is not just for microservices. It represents a new paradigm of programming that also suitable for other types of parallel computing and distributed computing. 
+
+\chapter{Meta-Notation} \label{sect: Ch2}
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+The syntax of CAOPLE language is defined in EBNF, which is an extension to BNF, or Backus Naur Form. 
+
+In BNF, and EBNF as well, the syntax definition of a language consists of a number of syntax rules. 
+Each syntax rule is in the form of \texttt{A \defs  Exp}, which defines a non-terminal symbol \texttt{A}, which represents a syntax entity or grammar concept of the language. Its definition is a formula \texttt{Exp} specifying how the syntax entity is formed from other syntax entities 
+and terminal symbols using a set of meta-notations. 
+
+A \texttt{terminal symbol} is a sequence of characters that may appear in the programs of the language. In this paper, they will be literal terminals, represented in the form of \lit{chars}, where the characters between the double quotes are the terminal symbols, or lexical tokens, represented in the form of \tml{TokenName} and the particular sequence of characters for such terminals are defined in \emph{Chapter \ref{sect:Lexical} Lexical Elements}. In a syntax rule, a non-terminal symbol will be represented in the form of a string of letters. 
+
+In a syntax rule, the non-terminal symbol to be defined occurs on the left-hand side of the meta-symbol \defs, which reads \textit{`is defined as'}, while its definition is an EBNF formula on the right-hand side, which is a concatenation of terms formed from terminal and non-terminal symbols using the  meta-symbols  \choice for \texttt{alternative},  \opt{~} for \texttt{option},  and \rpt{~} or \rptn{~} for \texttt{repetitions}.  %\footnote{The negation meta-symbol \texttt{$\sim$} is introduced because it is used in JavaCC syntax definition for tokens. It is only used once in this manual.} 
+In addition to these traditional EBNF meta-symbols, we introduce two new ones: \texttt{\color{red}{$\sim$}} for \texttt{negation}, and \texttt{\color{red}{=}} for \texttt{naming}. A syntax expression in the form of \texttt{X = Exp} within in an BNF formula means that the syntax entity \texttt{Exp} occurs is named as \texttt{X}, and the name \texttt{X} can be referred to in other syntax rule as a non-terminal symbol\footnote{Note: The \texttt{naming}  meta-notation fundamentally changes the BNF's context-free nature to be context sensitive. In this manual, we have used this facility to classify identifiers into variable names, type names, caste names, action names, and parameters, etc.}. 
+The meta-symbols of EBNF used in this manual are listed in Table \ref{tbl:Tab1}. 
+
+\begin{table}[htp]
+\begin{center}
+\caption{EBNF Meta-Notation}\label{tbl:Tab1}
+{
+		\begin{tabular}{|c|l|}
+			\hline 
+			\textbf{Symbol} & \textbf{Meaning}\tabularnewline
+			\hline 
+			\hline 
+			\defs & is defined as\tabularnewline
+			\hline 
+			\choice & or\tabularnewline
+			\hline 
+			\opt{~~} & option, i.e. zero or one occurrences\tabularnewline
+			\hline 
+			\rpt{~} & repetition, i.e. zero or more occurrences\tabularnewline
+			\hline 
+			\rptn{ ~ } & non-empty repetition, i.e. one or more occurrences\tabularnewline
+			\hline
+			\color{red}{$\sim$} & negation, i.e. no occurrence \tabularnewline
+			\hline
+			\color{red}{=} & naming, i.e. to classify the syntax entity into the given name. \tabularnewline
+			\hline
+		\end{tabular}
+	}
+	\end{center}
+\end{table}
+
+
+For example, the following are some examples of EBNF syntax rules. 
+
+\example{
+DefPackage \defs
+
+\tab \opt{Imports} \tml{DEFINITION} PackageName \color{red}{=} \color{black} Identifier \lit{\{} Definitions \lit{\}}
+
+Imports \defs \tml{IMPORT}  PackageName \rpt{\lit{,} PackageName}
+
+Definitions \defs \rptn{TypeDef \choice ConstDef} 
+
+TypeDef \defs \tml{TYPE}  TypeName \color{red}{=}\color{black} Identifier  \lit{=} TypeExpr 
+
+Identifier \defs Letter \rpt{Letter \choice Digit}  \color{red}{$\sim$}\color{black} Keyword
+}
+
+
+The first rule, on lines 1 and 2, defines a non-terminal symbol \texttt{DefPackage}. It is a syntax entity that consists of (a) an optional syntax entity \texttt{Imports} (which is also a non-terminal) followed by (b) a terminal symbol \tml{DEFINITION}, (c) a non-terminal symbol \texttt{Identifier}, which is named as \texttt{PackageName}, and then, (d) a terminal symbol \lit{\{}, (e) a non-terminal symbol \texttt{Definitions} and finishes with (f) a terminal symbol \lit{\}}. 
+
+The 3rd line defines the non-terminal \texttt{Imports}, which starts with a terminal symbol \tml{IMPORT} followed by a non-empty sequence of PackageNames separated by a terminal symbol comma \lit{,}. A PackageName is an \texttt{identifier} that occurred in a DefPackage.  
+
+The 4th line defines the non-terminal \texttt{Definitions}, which is a syntax entity that consists of a non-empty sequence of either a \texttt{TypeDef} or \texttt{ConstDef}. 
+
+The 5th line defines the non-terminal \texttt{TypeDef}, which stars with the terminal symbol \texttt{\tml{TYPE}}, followed by an identifier that is classified as \texttt{TypeName}, the terminal \lit{="} and a type expression \texttt{TypeExpr}. 
+
+Finally, on line 6, an \texttt{Identifier} is defined as a non-empty string of \texttt{letter}s and \texttt{digit}s that starts with a \texttt{letter}, but it must not be a \texttt{Keyword}. 
+
+In the sequel, syntax definitions of CAOPLE language in EBNF are put in rectangular boxes. Examples of program code or segments of code that illustrate the syntax and semantics of the language are put in round boxes.
+
+\chapter{Lexical Elements}\label{sect:Lexical}
+
+At lexical level, a program is a sequence of characters that are decomposed into a sequence of tokens. Each token is a finite sequence of characters separated by white spaces, and separators. Comments can be added on program code to provide additional information for human readers as well as language processors. 
+
+\section{White Spaces} 
+
+\JavaCCsyntax{
+White Spaces \defs \rptn{ \lit{$\sqcup$} \choice \lit{\textbackslash t} \choice \lit{\textbackslash n} \choice \lit{\textbackslash r} \choice \lit{\textbackslash f}}
+}
+
+White spaces include the space $\sqcup$, carriage return \textbackslash r, line feed \textbackslash n,  tab \textbackslash t, and form feed \textbackslash f. They play no functional role in the program but to separate tokens. They are skipped and ignored by compilers, but normally used by program text editors to present code in a more readable form. 
+
+\section{Tokens}
+
+There are five types of tokens in CAOPLE language: identifiers, atomic literals, keywords, operators and separators. 
+
+\subsection{Identifiers} 
+
+\JavaCCsyntax{
+  Identifier \defs Letter \rpt{ Letter \choice Digit } \color{red} $\sim$ \color{black} Keyword
+  
+  Letter \defs  \lit{a} - \lit{z} \choice \lit{A} - \lit{Z} \choice  \lit{\_}
+  
+  Digit \defs  \lit{0} - \lit{9}
+}
+
+An identifier is an arbitrarily long non-empty sequence of letters, digits and underscores
+that must not begin with a digit. Letters in upper and lower cases are distinct in identifiers. 
+Keywords (see Section \ref{sect:keywords}) cannot be used as identifiers. 
+
+For example, the following are valid identifiers.
+
+\example{
+\texttt{Name, Location\_1, City\_Address, StoneAge, controlVariable, x1}
+}
+
+Identifiers are used to identify castes, actions, data types, fields in record data types, variables, constants and parameters. 
+
+\subsection{Atomic Literals} \label{sect:AtmoicLiterals}
+
+\JavaCCsyntax{
+IntLiteral \defs (\lit{1} - \lit{9}) \rpt{\lit{0} -\lit{9}}
+
+RealLiteral \defs \rpt{\lit{0} - \lit{9}} ~ \lit{.} ~ \rpt{\lit{0} - \lit{9}}
+
+StringLiteral \defs
+
+\tab \lit{"}  \rpt{ \lit{$\backslash n} \choice \lit{\backslash t} \choice \lit{\backslash b} \choice \lit{\backslash r} \choice \lit{\backslash f} \choice \lit{\backslash\backslash} \choice \lit{\backslash'} \choice \lit{\backslash"}$
+
+\tab \tab \choice (\lit{0}-\lit{7}) \opt{\lit{0} -\lit{7}}
+
+\tab \tab \choice (\lit{0} - \lit{3}) (\lit{0}-\lit{7}) (\lit{0}-\lit{7})
+
+\tab \tab } \lit{"}
+
+BoolLiteral \defs \tml{TRUE}   \choice \tml{FALSE}
+
+Null \defs \tml{NULL}
+}
+
+There are five types of atomic literals. 
+\begin{itemize}
+\item \emph{Integer literals} are numerical values of integer numbers. 
+\item \emph{Real literals} are numerical values of real numbers. 
+\item \emph{String literals} are values of string type. In particular, \texttt{""} is the empty string. Within a string, the single quote and double quote symbols are represented using the escape symbol $\backslash$. The escape symbol itself is represented by $\backslash\backslash$. 
+\item \emph{Null} indicates that an element in structured data type or a variable or parameter has no value. 
+\item \emph{True} and \emph{False} are literals of the Boolean data type. 
+\end{itemize}
+	
+\subsection{Operators}
+
+CAOPLE uses the operators listed in Table \ref{tbl:TabOperators}.
+\begin{table}[h]
+\caption{Operators}\label{tbl:TabOperators}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Arithmetic & \texttt{+}~~~  \texttt{-}~~~ \texttt{*}~~~ \texttt{/}~~~ \texttt{\%}\\
+\hline 
+Relational &\texttt{==}~~~ \texttt{!=}~~~ \texttt{>}~~~ \texttt{>=}~~~ \texttt{<}~~~ \texttt{<=}\\
+\hline
+Logic  &\texttt{\&\&}~~~ \texttt{||}~~~ \texttt{!}\\
+\hline
+List &\texttt{\^~}\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}%
+
+\subsection{Separators}
+
+Separators used in CAOPLE are given in Table \ref{tbl:TabSeparators} below. 
+
+\begin{table}[h]
+\caption{List of separators}\label{tbl:TabSeparators}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Separators: ~~~\texttt{(}~~~ \texttt{)}~~~ \texttt{\{}~~~ \texttt{\}}~~~ \texttt{<}~~~ \texttt{>}~~~ \texttt{,}~~~ \texttt{;}~~~ \texttt{.}~~~\texttt{\#}~~~\texttt{$\backslash$}~~~\texttt{|}\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}%
+
+\subsection{Keywords}\label{sect:keywords}
+
+A keyword consists of a sequence of letters. CAOPLE language is case sensitive in the sense that the upper case and lower case of a letter are regarded as different. To relax this case sensitivity and also to enable different coding styles through various naming conventions, CAOPLE allows a keyword to have a number of different appearances in a program.  For example, the following are regarded as the same keyword in CAOPLE:
+\begin{center}
+\texttt{Body, body, BODY}
+\end{center}
+
+However, "boDy" and "bODy" etc. are not keywords, thus different from the keyword "body". 
+
+The keywords used in CAOPLE are listed in Table \ref{tbl:Tab3}. 
+
+\begin{table}[htp]
+\caption{List of Keywords}\label{tbl:Tab3}
+\begin{center}
+{\footnotesize
+\JavaCCsyntax{  
+\tml{ACTION} \defs  \lit{action} \choice  \lit{Action} \choice  \lit{ACTION} \\
+\tml{AGENT}\defs \lit{agent} \choice  \lit{Agent} \choice  \lit{AGENT} \\
+\tml{ALL} \defs  \lit{all} \choice  \lit{All} \choice  \lit{ALL} \\
+\tml{AT} \defs  \lit{@} \\
+\tml{BODY} \defs  \lit{body} \choice  \lit{Body} \choice  \lit{BODY} \\
+\tml{BOOL} \defs  \lit{bool} \choice  \lit{Bool} \choice  \lit{BOOL} \\
+\tml{CASTE} \defs  \lit{caste}  \choice  \lit{Caste} \choice  \lit{CASTE} \\
+\tml{CREATE} \defs  \lit{create} \choice  \lit{Create} \choice  \lit{CREATE} \\
+\tml{DESTROY} \defs  \lit{destroy} \choice  \lit{Destroy} \choice  \lit{DESTROY} \\
+\tml{ELSE} \defs  \lit{else} \choice  \lit{Else} \choice  \lit{ELSE} \\
+\tml{EXIST} \defs  \lit{exist} \choice  \lit{Exist} \choice  \lit{EXIST} \\
+\tml{EXTEND} \defs  \lit{extend} \choice  \lit{Extend} \choice  \lit{EXTEND} \\
+\tml{FALSE} \defs   \lit{false} \choice  \lit{False} \choice  \lit{FALSE} \\
+\tml{FOR} \defs  \lit{for} \choice  \lit{For} \choice  \lit{FOR} \\
+\tml{FROM}\defs  \lit{from} \choice  \lit{From} \choice  \lit{FROM} \\
+\tml{GET\_IP} \defs  \lit{getIP} \choice  \lit{GetIP} \choice  \lit{GET\_IP} \choice  \lit{Get\_IP} \\
+\tml{IF} \defs  \lit{if} \choice  \lit{If} \choice  \lit{IF} \\
+\tml{IN} \defs  \lit{in} \choice  \lit{In} \choice  \lit{IN} \\
+\tml{INIT} \defs  \lit{init} \choice  \lit{Init} \choice  \lit{INIT} \\
+\tml{INTEGER} \defs  \lit{int} \choice  \lit{Int} \choice  \lit{INT}  \\
+\tml{JAVA\_LIB\_CALL} \defs  \lit{JavaLibCall} \choice  \lit{Java\_Lib\_Call} \\
+\tml{JAVA\_OBJ\_CREATE} \defs  \lit{JavaObjCreate} \choice  \lit{Java\_Obj\_Create} \\
+\tml{JAVA\_OBJ\_CALL} \defs  \lit{JavaObjCall} \choice  \lit{Java\_Obj\_Call} \\
+\tml{JOIN} \defs  \lit{join} \choice  \lit{Join} \choice  \lit{JOIN} \\
+\tml{LOOP} \defs  \lit{loop} \choice  \lit{Loop} \choice  \lit{LOOP} \\
+\tml{NULL} \defs  \lit{null} \choice  \lit{Null} \choice  \lit{NULL} \\
+\tml{OF} \defs  \lit{of} \choice  \lit{Of} \choice  \lit{OF} \\
+\tml{ONLY} \defs  \lit{only} \choice  \lit{Only} \choice  \lit{ONLY} \\
+\tml{OBSERVE} \defs  \lit{observe} \choice  \lit{Observe} \choice  \lit{OBSERVE} \\
+\tml{PRINT} \defs  \lit{print} \choice  \lit{Print} \choice  \lit{PRINT} \\
+\tml{QUIT} \defs  \lit{quit} \choice  \lit{Quit} \choice  \lit{QUIT} \\
+\tml{RCV} \defs  \lit{rcv} \choice  \lit{RCV} \\
+\tml{REAL} \defs  \lit{real} \choice  \lit{Real} \choice  \lit{REAL} \\
+\tml{REPEAT}\defs  \lit{repeat} \choice  \lit{Repeat} \choice  \lit{REPEAT} \\
+\tml{RESUME} \defs  \lit{resume} \choice  \lit{Resume} \choice  \lit{RESUME} \\
+\tml{SOME} \defs  \lit{some} \choice  \lit{Some} \choice  \lit{SOME} \\
+\tml{STATE} \defs  \lit{state} \choice  \lit{State} \choice  \lit{STATE} \\
+\tml{STRING} \defs  \lit{string} \choice  \lit{String} \choice  \lit{STRING} \\
+\tml{SUPER} \defs  \lit{super} \choice  \lit{Super} \choice  \lit{SUPER} \\
+\tml{SUSPEND} \defs  \lit{suspend} \choice  \lit{Suspend} \choice  \lit{SUSPEND} \\
+\tml{TILL} \defs  \lit{till} \choice  \lit{Till} \choice  \lit{TILL} \\
+\tml{TO}\defs  \lit{to} \choice  \lit{To} \choice  \lit{TO} \\
+\tml{TO\_REAL} \defs  \lit{to\_real} \choice  \lit{To\_Real} \choice  \lit{TO\_REAL} \choice  \lit{ToReal} \choice  \lit{toReal} \choice  \lit{to\_Real} \\
+\tml{TO\_STRING} \defs  \lit{to\_string} \choice  \lit{To\_String} \choice  \lit{toString} \choice  \lit{ToString} \choice  \lit{TO\_STRING} \choice  \lit{to\_String} \\
+\tml{TO\_INT} \defs  \lit{to\_int} \choice  \lit{To\_Int} \choice  \lit{TO\_INT} \choice  \lit{ToInt} \choice  \lit{toInt} \choice  \lit{to\_Int} \\
+\tml{TRUE} \defs  \lit{true} \choice  \lit{True} \choice  \lit{TRUE} \\
+\tml{VAR} \defs  \lit{var} \choice  \lit{Var} \choice  \lit{VAR} \\
+\tml{UNTIL} \defs  \lit{until} \choice  \lit{Until} \choice  \lit{UNTIL} \\
+\tml{WAIT} \defs  \lit{wait} \choice  \lit{Wait} \choice  \lit{WAIT} \\
+\tml{WHEN} \defs  \lit{when} \choice  \lit{When} \choice  \lit{WHEN} \\
+\tml{WHILE} \defs  \lit{while} \choice  \lit{While} \choice  \lit{WHILE} \\
+\tml{WITH} \defs  \lit{with} \choice  \lit{With} \choice  \lit{WITH} 
+}
+}
+\end{center}
+\end{table}
+
+\section{Comments}
+
+\JavaCCsyntax{
+SingleLineComment \defs
+
+\tab \lit{//} (String  \color{red}$\sim$\color{black}  \rpt{\lit{$\backslash n$} \choice \lit{$\backslash r}$}) (\lit{$\backslash n$} \choice \lit{$\backslash r$} \choice \lit{$\backslash r\backslash n$})
+
+FormalComment \defs
+ \lit{/**} (\tml{String} \color{red}$\sim$\color{black} \lit{*/}) \lit{*/}
+
+MultiLineComment \defs
+ \lit{/*} (\tml{String} \color{red}$\sim$\color{black} \lit{*/}) \lit{*/}
+}
+
+The characters \lit{/*} introduce a comment, and the comment
+is terminated with the characters \lit{*/}. Comments do nest.
+The characters \lit{//} also introduce a comment and that comment
+is terminated by the end of the line. 
+
+Comments are ignored by the compiler, but they are often used by other language processors, for example for generating documents.
+
+\chapter{Data Types}
+
+%CAOPLE has two kinds of types: \emph{data types} and \emph{agent types}. 
+
+A data type is a set of data values of certain structure that can be held and processed by agents and passed between agents. Each data in CAOPLE language has a type, which can be determined at compilation time and check for type correctness statically. User can define data types by type declarations based on data types predefined in the CAOPLE language. This chapter defines the syntax and semantics of data types and type declarations.
+
+%An agent type defines a set of agents that are of the same structure and behaviour, where the structure includes the state space, the actions that the agents are capable of performing and the environment in terms of a set of other agents that it interacts with. Agent types are declared by caste declarations. 
+
+% Caste declaration are defined in Chapter \ref{sect:CasteDec}. 
+
+\section{Predefined Data Types}
+
+\JavaCCsyntax{
+PredefinedDataType \defs \tml{INT} \choice \tml{REAL} \choice \tml{BOOL} \choice \tml{STRING}
+}
+
+There are four predefined data types: integer, real, bool and string. Thier sets of values are the integers numbers, real numbers, boolean values and strings of characters, respectively. 
+
+\section{Agent Data Types}
+\JavaCCsyntax{
+AgentDataType \defs \tml{AGENT} \opt{\lit{\{}CasteName\lit{\}}}
+}
+
+The values of an agent data type are the universally unique identifiers of the agent of a caste in the system; see Chapter 8 for caste declarations. When the clause \lit{\{} CasteName \lit{\}} is omitted, the values are the universally unique identifiers of all agents of any caste. 
+
+\section{User Defined Data Types}
+
+Users can define three kinds of data types: \emph{Record}, \emph{List} and \emph{Enumerate}. 
+
+Record and List are \emph{structured} data types. They are constructed from existing data types, including predefined data types \texttt{integer}, \texttt{real}, \texttt{bool}, \texttt{string}, agent data types, and user defined data types as well. Enumerate data types are primitive data types, whose values are atomic. 
+
+\subsection{Type Declaration}
+
+%\texttt{String} is a predefined structured data type, which is a list of characters. 
+
+\JavaCCsyntax{
+TypeDef \defs
+
+\tab \tml{TYPE} ~ DataTypeName=Identifier \lit{=} TypeExpr \lit{;}
+
+TypeExpr \defs 
+
+\tab RecordTypeExpr \choice ListTypeExpr \choice EnumerateTypeExpr
+}
+
+User defined data types can be declared in a definition package (see Chapter \ref{sect:DefinitionPackage}) and used in caste declarations (see Chapter \ref{sect:CasteDec}). They can also defined in a caste declaration as local type definitions. 
+
+\subsection{Record Types}
+
+\JavaCCsyntax{
+RecordTypeExpr \defs
+	
+\tab \tml{STRUCT}  \lit{\{} \rptn{ FieldName \lit{:} TypeName \lit{;} } \lit{\}}
+
+TypeName \defs PredefinedDataType \choice DataTypeName \choice AgentDataType
+}
+
+A record groups a collection of data elements, called fields. These elements are accessed through identifiers called the field names. A record type declaration defines the structure of such records by specifying the names and the types of the fields. A record type expression must contain at least one field.
+
+\texttt{TypeName} in the above syntax rule can be either a keyword for a predefined data type, i.e. \tml{INT}, \tml{REAL}, \tml{BOOL} ~or \tml{STRING}, or a user defined data type name, i.e. an identifier introduced in a data type declaration, or an agent data type. 
+
+For example, the following is a record type declaration. 
+
+\example{
+\texttt{type Person1 = struct \{ }
+
+\texttt{~~~~name: string;}
+
+\texttt{~~~~day: int; month: int; year: int; }
+
+\texttt{\} }
+}
+
+In the above example, the name of the record data type is \texttt{Person1}. It contains four fields named as \texttt{name, day, month, year}, respectively. The field \texttt{name} is of \texttt{string} data type. The fields \texttt{day}, \texttt{month}, and \texttt{year} are of \texttt{integer} data type. 
+
+An alternative to the above data type declaration is given below.
+
+\example{
+\texttt{type Date = struct \{ }
+
+\texttt{~~~~day: int; }
+
+\texttt{~~~~month: int; }
+
+\texttt{~~~~year: int; }
+
+\texttt{\} }
+
+
+\texttt{type Person2 = struct \{}
+
+\texttt{~~~~name: string;}
+
+\texttt{~~~~DoB: Date;}
+
+\texttt{\}}%
+}
+
+In this example, two record data types are defined. The first is named \texttt{Date}, which consists of three fields \texttt{day}, \texttt{month} and \texttt{year} of integer type. The second is a record type named \texttt{Person2}, which consists of two fields \texttt{name} of string type and \texttt{DoB} of the structured type \texttt{Date}.  
+
+The following is an example of record type that contains an agent type as a field type.  Let \texttt{Peer} be a caste name declared in a caste declaration; see Chapter \ref{sect:CasteDec} for details. 
+
+\example{
+\texttt{type person3 = struct \{}
+
+\texttt{~~~~name: string;}
+
+\texttt{~~~~DoB: Date;}
+
+\texttt{~~~~PDA: Peer;}
+
+\texttt{\}}
+}
+
+In this record data type, the field \texttt{PDA} holds the identity of an agent in caste \texttt{Peer}. 
+ 
+\subsection{List Types}
+
+A list is an ordered sequence of elements all of the same type. A
+list type declaration defines a particular named type to be a list.
+
+\JavaCCsyntax{
+ListTypeExpr \defs \tml{LIST} \lit{\{} TypeName \lit{\}}
+}
+
+The type name gives the type to which all elements of the list
+must belong. The following is an example of list data type declaration, which define data type IntList as a list of integers. 
+
+\example{
+\texttt{type IntList = list \{ integer \};}%
+}
+
+The element data type of a list can also be a structured data type. For example, the following data type contains a list of information about persons.
+
+\example{
+\texttt{type ClassList = list \{ Person2 \};} 
+}
+
+The following are two examples of lists type declarations, whose element date types are agent data types. The values of ListOfWorkers data type are lists whose elements are the universally unique identifiers of agents in the caste called Workers. For the type ListOfAgents, the elements can be the universally unique identifiers of all agent in any caste. 
+
+\example{
+\texttt{type ListOfWorkers = list \{ Agent\{Workers\} \};} \\
+\texttt{type ListOfAgents = list \{ Agent \};} 
+}
+
+
+%Note that, the predefined data type \texttt{String} is a list data type, which can be considered as equivalent to the following type declaration. Thus, list operators can be applied to string values. 
+
+%\example{
+%\texttt{type string = list \{ Char \}}
+%}
+
+\subsection{Enumerate Types}
+
+An enumerate data type contains a finite set of user defined values represented in the form of identifiers. A enumerate date type declaration explicitly lists its possible values.   
+
+\JavaCCsyntax{
+EnumerateTypeExpr \defs
+	
+\tab \tml{ENUM} \lit{\{} EnumValue=Identifier  \rpt{\lit{,} ~EnumValue=Identifier } \lit{\}}
+}
+
+The comma-separated list of identifiers denotes the values that the enumerate type can take. For example: 
+
+\example{
+\texttt{type Day = enum \{ Mon, Tues, Wed, Thur, Fri, Sat, Sun \}}
+}
+
+The following is an example of record type \texttt{Person4}, which uses an enumerate data type as a field. 
+
+\example{
+\texttt{type Gender = enum \{ Male, Female \} ; }
+
+\texttt{type Person4 = struct \{ }
+
+\texttt{~~name : string ;}
+
+\texttt{~~sex : Gender;}
+
+\texttt{~~DoB : Date;}
+
+\texttt{\}}
+}
+
+\chapter{Literals and Constants}
+
+A literal is a constant that represents a given value of certain data type. 
+
+\JavaCCsyntax{
+LiteralValue \defs
+	
+	\tab PrimitiveLiteral \choice StructuredLiteral
+	
+PrimitiveLiteral \defs
+	
+	\tab intLiteral \choice realLiteral \choice stringLiteral \choice EnumLiteral
+}
+
+\section{Literals of Primitive Data Types}
+
+The formats of literals of \texttt{integer}, \texttt{real}, \texttt{bool} and \texttt{string} types are given in Section \ref{sect:AtmoicLiterals}. 
+
+A literal value of an enumerate data type is a pair of the enumerate type name and an enumerate value of the type separated by \lit{:}. 
+
+\JavaCCsyntax{
+EnumLiteral \defs TypeName \lit{:} EnumValue
+}
+
+For example, \texttt{Gender:Male} is a literal of the enumerate type \texttt{Gender}. 
+
+\section{Literals of Structured Data Types}
+
+\JavaCCsyntax{
+StructuredLiteral \defs TypeName \lit{:} StructuredLitValue
+
+StructuredLitValue \defs RecordLiteral \choice ListLiteral
+}
+
+A literal of a structured data type starts with the type name, followed by a \lit{:} and then the literal value. 
+Literal values of structured data types are constructed from primitive literals. 
+
+\subsection{Literal Values of Record Types}
+
+\JavaCCsyntax{
+RecordLiteral \defs
+	
+\tab \lit{\{} FieldName \lit{:} FieldValue=Literal 
+	
+\tab \tab \rpt{ \lit{,} FieldName \lit{:} FieldValue=Literal } \lit{\}}
+}
+
+In a record literal value, the identifier as a FieldName must be a field name of the record data type. The literal values of the corresponding field must be of the corresponding data type. 
+
+The FieldName-LiteralValue pairs in an record type literal can occur in any order regardless of the order that fields occur in the record type declaration. 
+
+For example, the following are some valid literal values for the \texttt{Person1} record type. 
+
+\example{
+\texttt{Person1: \{name:"Hong Zhu"\}}
+
+\texttt{Person1: \{name:"Hong Zhu", day:9, month:2, year:1961\} }
+
+\texttt{Person1: \{name:"Hong Zhu", month:2, day:9\} }
+
+\texttt{Person1: \{name:"Hong Zhu", year:1961\}}
+}
+
+A field name must not occur more than once in a literal. But, a field can be omitted from the list of FieldName-LiteralValue pairs. In this case, the field of the record is undefined, and it is equivalent to write \texttt{fieldName:null}. For a field $x$ of string type, $x=""$ is different from $x= null$. In the former, the field $x$ is defined and has a value \emph{empty string}; while in the latter, field $x$ is not defined and has no value at all. 
+For example, the following literal is equivalent to the last literal in the above example. 
+
+\example{
+\texttt{Person1: \{ name:"Hong Zhu", day:null, month:null, year:1961\} }
+}
+
+The following is an example of valid literal value of the \texttt{Person2} record type, which contains a field whose type is a structured type. 
+
+\example{
+\texttt{Person2: \{}
+
+\texttt{~~~~name:"Hong Zhu",}
+
+\texttt{~~~~DoB: Date:\{day:9, month:2, year:1961\} }
+
+\texttt{\}}
+}
+
+\subsection{Literals of List Types}
+
+\JavaCCsyntax{
+ListLiteral \defs
+
+ \lit{[}  \opt{ ElementValue=Literal \rpt{  \lit{,} ElementValue=Literal }} \lit{]}
+}
+
+The sequence of element literal values can be of any length, including 0, which means the list is empty. 
+The following are some examples of valid literal values of the \texttt{IntList} data type.  
+
+\example{
+
+\texttt{IntList: []  ~~~~~//the empty list of integers.}
+
+\texttt{IntList: [0]  ~~~~~//a list of 1 integer value.}  
+
+\texttt{IntList: [1, 2, 3, 4, 5]  ~~~~//a list of 5 integer values.}
+}
+
+The following is an example of list type declarations that contain structured values as elements. Some examples of its literal values are also shown. 
+
+\example{
+\texttt{//type definition for a list of dates:}
+
+\texttt{type DateList = List\{Date\} }
+
+\texttt{//Example 1 of literal value -- a list of 1 date: }
+
+\texttt{DateList: }
+\texttt{[Date:\{day:9, month:2, year:1961\}]} 
+
+\texttt{//Example 2 of literal value -- a list of 2 dates:}
+
+\texttt{DateList: [}
+
+\texttt{~~Date:\{day:9, month:2, year:1961\},}
+
+\texttt{~~Date:\{day:3, month:8, year:1959\}}
+
+\texttt{]}
+}
+
+\section{Constant Declarations}
+
+Each constant declaration defines an identifier to denote a constant value. Constant declarations are in the following forms. 
+
+\JavaCCsyntax{
+ConstDef \defs
+
+\tab \tml{CONST} ~ConstName=Identifier \lit{=}  LiteralValue \lit{;}
+}
+
+The type of the constant is the same as the literal value. 
+
+For example, the following declares a identifier that denotes a constant value of the \texttt{Person4} data type. 
+
+\example{
+\texttt{const HongZhu = }
+
+\texttt{~~~~Person4: \{ }
+
+\texttt{~~~~~~~name:"Hong Zhu", }
+
+\texttt{~~~~~~~sex:"Male",}
+
+\texttt{~~~~~~~DoB: Date: \{day:9, month:2, year:1961\}}
+
+\texttt{~~~~\}}
+}
+
+\chapter{Definition Packages}\label{sect:DefinitionPackage}
+
+Definition packages are used to define a set of related types and constants of the data to be processed by the agents and passed between them. 
+
+\JavaCCsyntax{
+DefPackage \defs
+
+	\tab \opt{Imports}  \tml{DEFINITION}~ PackageName=Identifier  \lit{\{} Definitions \lit{\}}
+
+Imports \defs \tml{IMPORT} ~PackageName \rpt{\lit{,} PackageName} \lit{;}
+
+Definitions \defs \rptn{ TypeDef \choice ConstDef }
+}
+
+A definition package may depends on a number of existing other definition 
+packages. The \texttt{Imports} clause starts with the key word \texttt{import}, and then lists the identities of such packages. 
+
+The body of a definition package consists of a series of one or more 
+declarations of data types and constants.
+
+\example{
+\texttt{DEFINITION DateTypes \{}
+
+\texttt{~~~~TYPE WeekDays = ENUM:\{Mon, Tue, Wed, Thur, Fri, Sat, Sun\};}
+
+\texttt{~~~~TYPE Months = ENUM:\{Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sept, Oct, Nov, Dec \};}
+
+\texttt{~~~~TYPE Date = STRUCT\{ day:INTEGER; month:Months; year:INTEGER\};}
+
+\texttt{\}}
+
+\texttt{IMPORT DateTypes;}
+
+\texttt{DEFINITION PersonalTypes \{}
+
+\texttt{~~~~TYPE Person = STRUCT\{name:STRING; DateOfBirth:Date\};}
+
+\texttt{\}}
+}
+
+\chapter{Expressions}
+
+An expression is formed from primary expressions by applying operators. Each expression has a type and evaluates to a value of the type when executed.
+
+\section {Primary Expression}
+
+\JavaCCsyntax{
+PrimaryExpression \defs
+
+\tab (Literal \choice Identifier \choice StateExpression \choice \lit{(} Expression \lit{)})
+
+\tab \tab \rpt{ElemenetExpression}
+
+StateExpression \defs AgentName \lit{\#} Identifier 
+}
+
+A primary expression can be either a literal value, or an identifier of a constant or a variable of the agent, a state variable of another agent, agent parameter, or action parameter.  
+When an identifier is modified by an agent name (i.e. an identifier of an agent type) in the form of \texttt{AgentName \# Variable}, it refers to the state variable of that agent. 
+
+\JavaCCsyntax{
+ElementExpression \defs
+
+\tab \rpt{ \lit{[} AdditiveExpression \lit{]} 
+
+\tab \choice \lit{.} FieldName
+
+\tab \choice \lit{.} \tml{LENGTH}
+
+\tab \choice \lit{.} \tml{HAS\_FIELD} \lit{(}  FieldName \lit{)}
+
+\tab \choice \lit{.} \tml{IS\_DEFINED}
+
+\tab \choice \lit{.} \tml{TO\_REAL}
+
+\tab \choice \lit{.} \tml{TO\_STRING}
+
+\tab \choice \lit{.} \tml{TO\_INT}
+
+\tab \choice \lit{.} \tml{VALUE\_OF}\lit{(} TypeName \lit{)}
+
+\tab \choice \lit{.} \tml{STARTS\_WITH}\lit{(} Expression \lit{)}
+
+\tab \choice \lit{.} \tml{REPLACE} \lit{(} Expression \lit{,} Expression \lit{)}
+
+\tab \choice \lit{.} \tml{ADD\_ELEMENT}\lit{(} Expression \lit{)}
+
+\tab \choice \lit{.} \tml{REMOVE\_ELEMENT}\lit{(} Expression \lit{)}
+}
+}
+
+When the type of an expression is a structured data type, a primary expression can be followed by an ElementExpression, i.e. an element selection or testing expression, to access its elements. An element selection expression can be in one of the following forms. 
+\begin{itemize}
+\item \texttt{[expr]} to select the element of a list, where \texttt{expr} is an integer type expression and its value is the index of the element in the list. 
+\item \texttt{.FieldName} to select a field of a record.  
+\item \texttt{.length} to get the number of elements in a list or the length of a string value.
+\item \texttt{.has\_field(FieldName)} to test if the field in the record is defined or not. 
+\item \texttt{.is\_defined} to test if the value of the expression is defined. 
+\item \texttt{.to\_string} to convert the data into a string. 
+\item \texttt{.to\_real} to convert a string or integer data into a real number data. 
+\item \texttt{.to\_int} to convert a string into an integer data. 
+\item \texttt{.value\_of(TypeName)} to convert a string value into a value of the type.
+\item \texttt{.starts\_with(exp)} to test is the string value starts with the string of the exp.
+\item \texttt{.replace(exp1, exp2)} to replace all occurrences of string exp1 by the string of exp2 in the value of the expression. 
+\item \texttt{.add\_element(exp)} to add the element of the exp value to a list at the end. 
+\item \texttt{.add\_element(exp)} to remove the element at the index of the value of exp in a list. 
+\end{itemize}
+
+\section{Operators and Expressions}
+
+Operators have different execution priorities when they are applied to form expressions. This is reflected in the syntax definition of expressions.  
+%\comment{This part is different from the syntax in the implementation. The code may need to be re-written. }
+
+\JavaCCsyntax{
+Expression \defs \tab ConditionalOrExpression
+
+ConditionalOrExpression \defs
+
+\tab ConditionalAndExpression \rpt{\lit{||} ConditionalAndExpression}
+
+ConditionalAndExpression \defs
+
+\tab EqualityExpression \rpt{\lit{$\&\&$} EqualityExpression}
+
+EqualityExpression \defs
+
+\tab RelationalExpression \opt{(\lit{==} \choice \lit{!=}) RelationalExpression }
+
+RelationalExpression \defs
+
+\tab AdditiveExpression  \opt{(\lit{$<$} \choice \lit{$>$} \choice \lit{$<=$} \choice \lit{$>=$}) AdditiveExpression} 
+
+AdditiveExpression \defs
+
+\tab MultiplicativeExpression \rpt{(\lit{+} \choice \lit{-}) MultiplicativeExpression}
+
+MultiplicativeExpression \defs
+
+\tab UnaryExpression \rpt{ (\lit{*} \choice \lit{/} \choice \lit{\%}) UnaryExpression}
+
+UnaryExpression \defs
+
+\tab \lit{!} UnaryExpression \choice PrimaryExpression
+}
+
+The types of operants in an expression must be compatible with the type of the operator although many of the operators are overloaded. Table \ref{tbl:Tab4} list the types of the operators.  
+
+\begin{table}[htp]
+\caption{Types of Operators}\label{tbl:Tab4}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline\hline
+\textbf{Operator} & \textbf{Type}\\
+\hline \hline
+\texttt{+ (add), - (minus)} &integer $\times$ integer $\rightarrow$ integer, \\
+&real $\times$ real $\rightarrow$ real\\
+&string $\times$ string $\rightarrow$ string\\
+\hline
+\texttt{* (time), / (divide)} &integer $\times$ integer $\rightarrow$ integer, \\
+&real $\times$ real $\rightarrow$ real\\
+\hline
+\texttt{\% (modulate) } &integer $\times$ integer $\rightarrow$ integer\\
+\hline
+\texttt{\&\& (and), || (or)} & bool $\times$ bool $\rightarrow$ bool\\
+\hline
+\texttt{! (not)} & bool $\rightarrow$ bool\\
+\hline
+\texttt{== (equal)} &integer $\times$ integer $\rightarrow$ bool, \\
+\texttt{!= (not equal)} & real $\times$ real $\rightarrow$ bool, \\ 
+& string $\times$ string $\rightarrow$ bool, \\
+& enum $\times$ enum $\rightarrow$ bool \\
+& bool $\times$ bool $\rightarrow$ bool\\
+& TypeName $\times$ TypeName $\rightarrow$ bool\\
+\hline
+\texttt{>   (greater than)} &integer $\times$ integer $\rightarrow$ bool, \\
+\texttt{>= (greater than or equal)}& real $\times$ real $\rightarrow$ bool, \\
+\texttt{<   (less than),} & string $\times$ string $\rightarrow$ bool, \\
+\texttt{<= (less than or equal)}  & \\
+\hline
+\texttt{addElement(exp)} & List\{T\} $\times$ X $\rightarrow$ List\{X\}\\
+\hline
+\texttt{removeElement(exp)} & List\{T\} $\times$ integer $\rightarrow$ List\{T\}\\
+\hline
+\texttt{length} & List\{T\} $\rightarrow$ integer\\
+& string $\rightarrow$ integer\\
+\hline
+\texttt{startsWith(exp)} & string $\times$ string $\rightarrow$ bool\\
+\hline
+\texttt{replace(e1, e2)} & string $\times$ string $\times$ string $\rightarrow$ string\\
+\hline
+\texttt{toReal  (convert to real value)} &string $\rightarrow$ real, \\
+&integer $\rightarrow$ real\\
+\hline
+\texttt{toInt} (convert to integer value) & string $\rightarrow$ integer \\
+&real $\rightarrow$ int\\
+\hline
+\texttt{valueOf} (convert to a value of the type) & string $\rightarrow$ TypeName \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}%
+
+When two operands of an overloaded operator are of different date types, the following type casting rules will be applied automatically. 
+
+\[ integer \Rightarrow real \Rightarrow string\]
+\[ bool \Rightarrow string \]
+
+Type conversions can be done by applying the postfix operators \lit{.to\_string} , \lit{.to\_real} , \lit{.to\_int} and \lit{.value\_of(typeName)} . They convert a value of one data type into another.  
+
+\chapter{Statements}
+
+\JavaCCsyntax{
+Statement \defs
+
+\tab \rpt{PrimaryStatement \choice StructuredControlStatement \choice LocalVarDecl \choice \lit{;}}  
+}
+
+Statements are formed from primary statements by using structured control statements. 
+
+\section{Local Variable Declarations}
+
+A local variable declaration can be at any place where a statement can be. It introduces a new variable and can have an optional assignment of an initial value to the variable. The scope of the variable is from the variable declaration to the end of its immediate enclosure statement. When a local variable declaration is executed, a storage space is allocated to the variable and the initialisation expression, if any, is executed and the result value is assigned to the variable. When the execution of the immediate enclosure statement finishes, the storage space allocated to the variable is discarded; and outside the scope, the variable is no longer accessible. The variable identifier must not be in conflict with any other identifiers; i.e. the identifier must have not been used for any other entity. 
+
+\JavaCCsyntax{
+LocalVarDecl \defs
+
+\tab \tml{VAR}~ VarID=Identifier \lit{:} TypeName \opt{\lit{:=} Expression} \lit{;} 
+}
+
+\section {Primary Statements} 
+ 
+\JavaCCsyntax{
+PrimaryStatement \defs
+
+\tab AgentOperationStatement 
+
+\tab \choice InstrStatement
+
+\tab \choice ActionInvoke
+
+\tab \choice Assignment
+}
+
+There are four kinds of primary statements: agent operation statements, action invocation statement, assignment statement, and instruction statements. 
+
+\subsection{Assignment}
+
+%The value of a variable can be modified by an assignment statement. An assignment statement is in the following form. 
+
+\JavaCCsyntax{
+Assignment \defs
+
+\tab Identifier \rpt{\lit{.} FieldName \choice \lit{[} AdditiveExpression \lit{]} }
+
+\tab \lit{:=} Expression \lit{;}
+}
+
+The identifier on the left hand side of the assignment symbol \texttt{:=} must be either a variable (local or global), an agent parameter,  or an action parameter. 
+
+When the assignment expression is executed, the expression on the right hand side of the assignment symbol \texttt{:=} is evaluated and the result value is then assigned to the variable or its element as indicated by the \texttt{.FieldName} for a record type variable or by the \texttt{[index]} for a list data type variable, and so on. The data type on the left hand side and right hand side of the assignment symbol must be identical. 
+
+\subsection {Agent Operations}
+
+\JavaCCsyntax{
+AgentOperationStatement \defs
+
+\tab CreationStm \choice JoinStm \choice QuitStm \choice SuspendStm \choice ResumeStm
+}
+
+There are five different agent operation statements.
+
+\JavaCCsyntax{
+CreationStm \defs
+
+\tab \tml{CREATE} \opt{AgentVar \tml{OF}} CasteName \lit{(} \opt{ActualParamList]\lit{)}}
+
+\tab\tab \opt{\tml{FROM} CasteLocation=StringTypeExpression}
+
+\tab\tab \opt{\tml{AT} ComputerLocation=StringTypeExpression} \lit{;} 
+
+ActualParamList \defs Expression \rpt{ \lit{,} Expression }
+
+JoinStm \defs
+
+\tab \tml{JOIN} CasteName \lit{(} \opt{ActualParamList} \lit{)}
+
+\tab \tab \opt{CasteLocation=StringTypeExpression} \lit{;} 
+
+QuitStm \defs \tml{QUIT} \opt{CasteName} \lit{;}
+
+SuspendStm \defs \tml{SUSPEND} \opt{CasteName} \lit{;}
+
+ResumeStm \defs \tml{RESUME} \opt{CasteName} \lit{;}
+
+DestroyStm \defs \tml{DESTROY} \opt{AgentVar} \lit{;}
+}
+
+An \texttt{agent creation} statement creates an agent of a specified caste. The computer on which the agent to be located can be specified in the optional \texttt{@}-clause, and the computer from which the executable code of the caste is downloaded can be specified in the optional \texttt{FROM}-clause. These locations must be string type expressions representing IP addresses. If any of the optional clauses is omitted, the default location is the local computer, i.e. the computer where the creation statement is executed. The statement may also contain an agent variable in the optional \texttt{Identifier-OF}-clause. The identifier must be a variable of the agent type of the \texttt{CasteName}. The result of execution this statement is creating an agent and assign the agent ID to the variable. The actual parameters, if any, are passed to the newly created agent to initialise the agent. 
+
+For example, an execution of the following statement will create an 
+agent of caste Peer on the computer IP address "161.74.147.20".
+The identity of the newly created agent will be assigned to the  
+variable \texttt{researcher} of type Peer.  
+
+\example{
+\texttt{Create researcher of Peer() @"161.74.147.20"}
+}
+
+A distinctive feature of CAOPLE is that an
+agent can join or quit a caste dynamically. It can also suspend its membership
+of a caste for a while and then resume it. These are achieved via executing a join, quit, suspend or a resume statement, respectively. 
+The \texttt{CasteName} in these statements is the name of the caste that the agent joins, quits, suspends or resumes. If it is omitted, the default is the current caste that the statement is in. The caste name must be listed in the \texttt{uses} clause. 
+
+The \texttt{Join statement} makes the agent a member of a specified caste, thus it obtains the state variables, parameters, environment variables, actions and execution body declared in the caste. The agent is also registered to the caste as a member. When an agent joins a caste that has parameters, the actual parameters in the form of a list 
+of expressions must be given as the parameters of the join statement. The types of these expressions must be compatible with parameter types give in the caste declaration. When the join statement is executed, the expressions are evaluated, and their values are passed to the initialisation code and the body code of the caste.  
+
+The \texttt{Suspend statement} statement causes the agent to suspend its membership to the caste. When an agent suspends its casteship to a caste, it will hold the values of the state variables of the caste as it is, but it will not execute the code of the caste until it resumes the casteship. 
+
+The \texttt{Quit statement} causes the agent to quit its caste membership for the given caste. When an agent quits from a caste, it will lost all components of the caste, including the state variables, actions and environment, and body. 
+ 
+When an agent quits or suspends a caste, it will also quit or suspend its a membership of the supercaste(s) (if any) of the quitted or suspended caste. 
+
+The \texttt{Destroy statement} kills the agent when the agentID is given or kills itself when there is no agentID given. Consequently, the agent will terminate its execution and be removed from the system. 
+
+An agent operation statement causes an agent to change its membership to a caste (i.e. the casteship). Thus, an agent can manage it casteship by performing these statements. However, the execution of such a statement is not always valid. In order to define the rules of valid casteship operation, we first define the notion of explicit caste membership and implicit caste membership. 
+
+An agent is an \texttt{explicit} member of a caste A, if and only if it is either created as an instance of the caste or joined the caste explicitly by executing a Join statement to this caste. By doing so, the agent also becomes a member of caste A's super-castes, if any. In this case, the agent is an \texttt{implicit} member of the supercastes of caste A. 
+
+The following are the rules of caste membership management. 
+
+\begin{itemize}
+\item An agent can change its state of explicit membership to a caste by executing a quit, suspend, resume statement, but not the state of its implicit membership, which are changed implicitly when the agent change the state of its explicit casteships. 
+\item An agent can become an explicit member of a caste B by execution a "join B" statement, even if it is already an implicit member of B. When the agent subsequently quits from B, it will retain its implicit membership of caste B. 
+\item An agent's execution of a casteship management statement will have no effect if it is already in the membership state, e.g. it is already suspended to the caste. 
+\end{itemize}
+
+Two implications of the above rules are: 
+
+\begin{itemize}
+\item An agent can resume the membership to a caste A, if and only it is in the suspended state to caste A due to explicit suspending of the casteship by an execution of a "suspend CasteA" statement. 
+\item An agent cannot resume the membership to a caste B that it was not created as an instance of the caste or not joined  the caste explicitly, even if the caste is a super-caste of another caste that it is a member of. 
+\end{itemize}
+
+\example{
+\texttt{join GreetingPeer();}
+
+\texttt{...}
+
+\texttt{quit GreetingPeer();}%
+}
+
+In the above example, assume that the agent is not a member of GreetingPeer, after executing the statement "join GreetingPeer", the agent will be a member of GreetPeer caste. Assume that between these two statements, there is no quit statement, after executing the statement "quit GreetingPeer", the agent will no long be a member of the caste Greeting Peer. 
+
+\subsection{Action Invocation Statement}
+
+\JavaCCsyntax{
+ActionInvoke \defs
+
+\tab ActionName \lit{(} \opt{ActualParamList} \lit{)} \lit{;}
+}
+%\comment{To do: Add target clause to action invocation statements.}
+
+The action invocation statement is in the same format of procedure call and method call statement in traditional programming languages.  When the action declaration contains parameters, an invocation of the action must have corresponding actual parameters in the form of a list of expressions. The types of the actual parameters must be the same as the corresponding parameters' type as declared. 
+
+The execution of an action statement starts with the evaluation of the expressions as the actual parameters. The result values are assigned to the parameters. Then, the body statement given in the action declaration is executed. If the action is externally visible (i.e. not an internal action), when the execution of the body successfully completed, an event is generated such that the event name is the action name and the parameters are the values of the action parameters when the execution of the body finishes. This event can be captured by all agents who observe this agent's behaviour. 
+
+For example, assume that \texttt{say(word:string)} is an action, where \texttt{word} is a parameter of type \texttt{string}, and in the body of the action, the value of the parameter \texttt{word} is not changed. For an invocation \texttt{say("Hello, world!")} of the action \texttt{say},  the value of the actual parameter is the string \texttt{"Hello, world!"}. A successful execution of the action will generate an event with the event name being \texttt{say} and the actual parameter being \texttt{"Hello world!"}.  
+
+\subsection{Instruction Statements}
+
+\JavaCCsyntax {
+InstrStm \defs
+
+\tab \tml{WAIT} IntegerTypeExpression \lit{;}
+
+\tab \choice \tml{PRINT} stringTypeExpression \lit{;}
+
+\tab \choice \tml{SUPER} \lit{(} ActualParamList \lit{)} \lit{;}
+
+\tab \choice \tml{JAVA\_LIB\_CALL} JarFileName MethodName \lit{;}
+
+\tab \choice \tml{JAVA\_OBJ\_CREATE} ClassName \lit{;}
+
+\tab \choice \tml{JAVA\_OBJ\_CALL} ClassName MethodName \lit{;} 
+
+}
+
+By executing a wait statement "wait 100", the agent will wait for 100 ms before progress to the next statement. 
+
+An execution of a print statement will display the value of the string type expression on the console screen of the machine. 
+
+a JavaLibCall statement will execute the method of the jar file. 
+
+a JavaObjCreate statement will create a Java object  of the class of the jar file. This object is associated to the agent and accessed implicitly through the JavaObjCall statements executed by the agent. 
+
+A JavaObjCall statement is usually used together with a JavaObjCreate statement. An execution of the JavaObjCall statement will execute the method of the Java object previously created by a JavaObjCreate statement. 
+
+These three Java related statements provides a mechanism for wrapping Java code into agents. 
+
+%\comment{To do: Add example to explain these statements.}
+
+The following is an example of using JavaLibCall statement. 
+
+\example{
+\texttt{caste Date()\{ }
+
+\texttt{~~var currentTimeMS: int; }
+
+\texttt{~~action Get\_Current\_TimeMS()\{ }
+
+\texttt{~~~~JavaLibCall "Date.Date", "GET\_CURRENT\_TIME"; }
+
+\texttt{~~\} }
+
+\texttt{~~init \{ } 
+
+\texttt{~~~~Get\_Current\_TimeMS(); }
+
+\texttt{~~~~print "The current time is: " + currentTimeMS; }
+
+\texttt{~~\}}
+
+\texttt{~~body \{\}}
+
+\texttt{\}}
+}
+
+The following is the Java code for the above example. 
+
+\example{
+\texttt{package Date;}
+
+\texttt{import obuaop.cavm.agent.*;}
+
+\texttt{public class Date \{}
+
+\texttt{~~public void GET\_CURRENT\_TIME(Agent agt) \{}
+
+\texttt{~~~~Variable currentTimeMS;}
+
+\texttt{~~~~currentTimeMS=agt.getVarByName("currentTimeMS");}
+
+\texttt{~~~~currentTimeMS.value= (int) System.currentTimeMillis();}
+
+\texttt{~~\}}
+
+\texttt{\}}
+}
+
+\section{Structured Control Statements} 
+
+CAOPLE has a number of traditional structured control statements that support structured programming, such as IF-statement, FOR-Statement, WHILE-statement, REPEAT-statement, etc. It also has two new statements for concurrent programming, which are WHEN-statement and TILL-statement to support event-driven computing and synchronisation between parallel executed agents. The WITH-statement in  traditional programming languages, and its similar LET construct in functional programming languages, has been given a new semantics of atomicity, thus can be used to maintain the integrity of structured data. Two other structured control statements are introduced, the FORALL statement and SEARCH statement. They are particularly useful for processing list type of data. 
+
+\JavaCCsyntax{
+StructuredControlStatement \defs
+
+\tab \choice IfStatement 
+
+\tab \choice CaseStatement
+
+\tab \choice ForStatement 
+
+\tab \choice WhileStatement 
+
+\tab \choice RepeatStatement
+
+\tab \choice LoopStatement
+
+\tab \choice ForallStatement
+
+\tab \choice SearchStatement
+
+\tab \choice WithStatement
+
+\tab \choice WhenStatement
+
+\tab \choice TillStatement
+}
+
+\subsection{If Statement}
+
+\JavaCCsyntax{
+IfStatement \defs
+
+\tab \tml{IF} \lit{(} Expression \lit{)} \lit{\{} Statement \lit{\}}
+
+\tab	\opt{ \tml{ELSE} \lit{\{} Statement \lit{\}}}
+}
+
+The if-statement is the same as in traditional
+programming languages. It consists of a sequence of one or more (condition,
+statement) pairs, and a standalone optional ``else'' statement.
+Each condition is evaluated in turn until one such condition evaluates
+to true and then the corresponding statement is executed. If no conditions
+evaluate to true then the else statement is executed if it is exists;
+otherwise no statement is executed. 
+
+\subsection{When Statement}
+
+\JavaCCsyntax{
+	
+WhenStatement \defs
+
+\tab \tml{WHEN} EventExpression \lit{\{} Statement \lit{\}}
+
+EventExpression \defs
+
+\tab \tml{EXIST} Identifier \tml{IN} CasteName \lit{:} ActionPattern
+
+\tab \choice AgentID \lit{:} ActionPattern
+}
+
+A when statement consists of a scenario-statement pair. The execution of a when-statement is first to evaluate the scenario (i.e. the \texttt{EventExpression}), if it is true, 
+then the corresponding statement is executed; otherwise, the statement is skipped.  
+
+A scenario describes a situation in the environment in terms of the events happened due to the performance of actions by the agents in the environment. There are two formats of scenarios that CAOPLE supports directly. The first is when a particular agent has performed a certain pattern of action. The second is when there is an agent in a caste has performed a certain pattern of action. 
+
+The exist-scenario in the following form introduces a variable x of agent type caste C. Variable $x$'s scope is within the corresponding statement of the when-statement. 
+
+\example{
+\texttt{when exist $x$ in $C$:$ActionPattern$ \{ $statement$ \}}
+}
+
+An action pattern consists of the
+name of the action followed by parameters. 
+
+\JavaCCsyntax{
+ActionPattern \defs
+
+\tab ActionName \lit{(} \opt{ParaList} \lit{)}
+
+ParaList \defs
+
+\tab PatternParameter \rpt{\lit{,} PatternParameter}
+
+PatternParameter \defs
+
+\tab Expression \choice \tml{RCV} Variable
+}
+
+A pattern parameter can be either variable or an expression. When it is an expression (or a variable without the keyword \tml{RCV}), the value of the expression is used to match the parameter of the action event. If there is a keyword \tml{RCV} before the variable, the value of the parameter in the event is assigned to the variable, when the event is matched to the action pattern.  
+
+For example, let \texttt{something} be a string type variable, \texttt{Agt} be an agent variable of type \texttt{Peer}. The following are some examples of scenarios. 
+
+\example{
+
+\texttt{Agt: say("Welcome to the world!")}
+
+\texttt{Agt: say(rcv something)}
+
+\texttt{Agt: say(something)}
+
+\texttt{exist x in Peer: say("Welcome to the world!")}
+
+\texttt{exist x in Peer: say( rcv something)}
+
+\texttt{exist x in Peer: say(something)}
+}
+
+In the above examples, the 1st is true when agent Agt said "Welcome to the world!". 
+The 2nd is true when the agent Agt said something whose words are assigned to variable something. 
+The 3rd is true when the agent Agt said a word that is equal to the value of the variable something. 
+The 4th is true when there is an agent in the caste Peer said "Welcome to the world!". 
+The 5th is true when there is an agent said something whose words are assigned to variable something. 
+Finally, the 6th is true when there is an agent in the caste Peer said a word that is equal to the value of the variable something. 
+
+\subsection{Till Statement}
+
+\JavaCCsyntax{
+TillStatement \defs
+
+\tab \tml{TILL} EventExpression \lit{\{} Statement \lit{\}}
+
+\tab \rpt{ \lit{||} EventExpression \lit{\{} Statement \lit{\}} }
+
+\tab \opt{\tml{TIMEOUT} \lit{(} Expression \lit{)} \lit{\{} Statement \lit{\}}}
+\lit{;} 
+}
+
+The execution of a till statement will cause the agent to wait for a specified period of time (if given in the timeout clause) until one of the event expressions becomes true to progress to the corresponding statement, or timeout (that is, the specified period of time expires) and progress for the timeout statement. It will then finish the execution of the statement and progress to the next statement. The expression in the timeout clause must be of integer type. The value of the expression is the length of the period of time for timeout in milliseconds, i.e. 1/1000 seconds. 
+
+\example{
+
+\texttt{Till exist Agt in Peer: Say("Hello world!") \{ }
+
+\texttt{~~~~Say("Welcome to the world.") \} }
+
+\texttt{~~|| exist Agt in Peer: Say("Welcome to the world.") \{ }
+
+\texttt{~~~~Say("My name is " + name +". How are you?") \} }
+
+\texttt{timeout (30000) \{ }
+
+\texttt{~~~~Say("Good Bye!") \}; }
+
+}
+
+In the above example, the agent will wait for a period of 30 seconds (i.e. 30000 milliseconds). In this period of time, it will take the action \emph{Say("Welcome to the world.")}, if some agent of the caste Peer took an action  \emph{Say("Hello world!")}, then progress to the next statement; or, it will take an action \emph{Say("My name is " + name +". How are you?")}, if some agent in the caste of Peer \emph{Say("Welcome to the world.")}, and then progress to the next statement. If no such event happens in the period of 30 seconds, it will take the action \emph{Say("Good Bye!")} when timeout (i.e. at the end of 30 seconds), then progress to the next statement. 
+
+When a Till statement does not contain a timeout-clause, it will wait indefinitely until one of the events happens. 
+
+\subsection{For Statement}
+
+\JavaCCsyntax{
+ForStatement \defs
+
+\tab \tml{FOR} \lit{(} \opt{\tml{VAR}} Identifier \lit{:=} AdditiveExpression \tml{TO} ~AdditiveExpression \lit{)}
+
+\tab \tab \lit{\{} Statement \lit{\}}
+}
+
+An execution of a for-loop is a repeated execution of the loop body statement for a number
+of times. The number of times is determined by a \emph{control variable} (of Integer type) together with a \emph{from-value} and a \emph{to-value}. The repeated execution of the loop body starts with the control variable being assigned with the \emph{from-value}. After each execution of the loop body, the value of the control variable is increased by 1. The repeated execution of the loop body finishes when the control variable's value is greater than the \emph{to-value}. 
+
+When there is a keyword \tml{VAR} before the step variable of a for-statement, the step variable is new and declared as of integer type. 
+
+\subsection{While Statement}
+
+\JavaCCsyntax{
+WhileStatement \defs
+
+\tab \tml{WHILE} \lit{(} Expression \lit{)} \lit{\{} Statement \lit{\}}
+}
+
+A while loop consists of a control condition and a loop body statement, where a control condition is a Boolean expression. 
+
+The iteration of the loop body statements is determined by the control condition.  
+First the control condition is evaluated. If condition is false, the loop
+terminates. If the condition is true, the body statement is executed and
+the while-loop iterates. 
+
+\subsection{Repeat Statement}
+
+\JavaCCsyntax{
+RepeatLoop \defs
+
+\tab \tml{REPEAT} \lit{\{} Statement \lit{\}} \tml{UNTILL} \lit{(} BoolExp \lit{)}
+}
+
+A repeat loop also consists of a loop body statement and a control condition.  But, it differs from the while-loop in the way it controls the iteration. For the repeat statement, the loop body statements are executed first. Then, the control condition is evaluated. If the condition is false, the loop iterates. If the condition is true, the iteration terminates. 
+
+\subsection{Loop Statement}
+
+A loop statement consists of a sequence of statements that is executed over and
+over unboundedly. This is useful for representing a continuous process that has
+to respond to periodical events. 
+
+\JavaCCsyntax{
+LoopStatement \defs
+
+\tab \tml{LOOP} \lit{\{} Statement \lit{\}}
+}
+
+\subsection{With Statement} 
+
+The with statement ensures the data integrity of structured data by ensuring the atomicity of updating the structured data. 
+
+\JavaCCsyntax {
+WithStatement \defs
+
+\tab \tml{WITH}  \tml{VAR} Identifier \lit{=} VariableName \rpt{ \lit{.} FieldName \choice  \lit{[} IntegerExpression \lit{]} \} \lit{\{} Statement \lit{\}} }
+}
+
+The execution of a with-statement will create a new variable with the identifier on the left-hand side of the \lit{=} symbol. The expression on the right-hand side will be evaluates to a structured data to be processed by the statement. The value of the expression is assigned to the newly created variable. When the statement finishes, the value of the newly created local variable will be assigned back to the structured data. The update of the designated data will be atomic. Thus, the with-statement will maintain the integrity of the structured data. 
+
+For example, assume that variable x is of data type Person. The following with statement will ensure the data of various fields of DoB be updated at the same time so that the data integrity can be maintain all the time even when the statement is executed in parallel with the statements of other agents who read the same data. 
+
+\example{
+
+\texttt{with var y = x.DoB \{ }
+
+\texttt{~~~~y.day := 9;}
+
+\texttt{~~~~y.month := 2;}
+
+\texttt{~~~~y.year := 1961;}
+
+\texttt{ \} }
+}
+
+\subsection{Forall Statement}
+
+The syntax of \texttt{forall} statement is as follows. 
+
+\JavaCCsyntax{
+ForAllStatement \defs
+
+\tab \tml{FORALL} \lit{(} \opt{ \tml{VAR}} LocalVar=Identifier \tml{IN} Expression 
+
+\tab \tab \opt{\lit{|} BoolExpression} \lit{)} 
+
+\tab \tab \lit{\{} Statement \lit{\}} 
+}
+
+The expression in the \texttt{forall} statement must be a List type. When the keyword \tml{VAR} is present, the forall-statement introduces a local variable \texttt{Identifier} whose type is the element type of the \texttt{Expression}. Its scope is within the body of the forall-statement. Otherwise, the Identifier must be a variable or parameter whose type is the element type of the expression. The \texttt{forall} statement executes the statement repeatedly with the local variable assigned with one element of the list a time to the list length. 
+
+For example, consider the follow fragment code,  the value of variable MyList is the list [1,2,3,4,5] of integers, and integer type variable y with an initial value of 0. After an execution of the forall-statement, the value of variable y will be 15.  
+
+\example{
+\texttt{ var y: int; }
+
+\texttt{ var myList: IntList; } 
+
+\texttt{ y:=0; }
+
+\texttt{ myList := IntList:  [1, 2, 3, 4, 5];}
+
+\texttt{ forall (var x in myList ) \{ y := y+x \} }
+}
+
+Note that, an element in a list could be undefined since not all elements in a list are required to be defined. For example, executing the following sequence of statements will print on the screen "y==100". However, without the \emph{if (x.isDefined)} statement, it will have a runtime error since many elements between the 2nd to the 199th are not defined. 
+
+\example{
+\texttt{ var y: int; }
+
+\texttt{ var myList: IntList; } 
+
+\texttt{ y:=0; }
+
+\texttt{ myList[0] := 10;}
+
+\texttt{ myList[10]:= 40;}
+
+\texttt{ myList[200] := 50;}
+
+\texttt{ forall (var x in myList ) \{ }
+
+\texttt{ ~~~~ if (x.isDefined) \{y := y+x; \}}
+
+\texttt{  \} }
+
+\texttt{  print "y==" + y; }
+
+}
+
+If the BoolExpression is provided, the loop body will only be execute if the BoolExpression evaluates to \tml{TRUE}. A typical use of the BoolExpression if to filter the elements in the list. The following is such an example. 
+
+\example{
+\texttt{ y:=0; }
+
+\texttt{ forall (var x in myList | x.isDefined ) \{ }
+
+\texttt{ ~~~~ y := y+x;}
+
+\texttt{  \} }
+
+\texttt{  print "y==" + y; }
+
+}
+
+\subsection{Search Statement}
+
+The syntax of \texttt{Search} statement is as follows. 
+
+\JavaCCsyntax{
+ForAllStatement \defs
+
+\tab \tml{SEARCH} \lit{(} \opt{ \tml{VAR}} LocalVar=Identifier \tml{IN} Expression 
+
+\tab \tab \opt{\lit{|} BoolExpression} \lit{)} 
+
+\tab \tab \lit{\{} Statement \lit{\}} 
+
+\tab \tab \tml{DEFAULT} \lit{\{} Statement \lit{\}}
+}
+
+The expression in the \texttt{search} statement must be a List type. When the keyword \tml{VAR} is present, the search-statement introduces a local variable \texttt{Identifier} whose type is the element type of the \texttt{Expression}. Its scope is within the loop body of the search-statement. Otherwise, the Identifier must be a variable or parameter whose type is the element type of the expression. The \texttt{search} statement assigns an element of the list to the variable one a time from the beginning of the list (i.e. at index 0) to the end (i.e. at the index of list length -1). It then executes the BoolExpression. If the BoolExpression evaluates to \tml{TRUE}, the body statement is executed and the whole search statement finishes. If no elements in the list make the Bool expression true, the default statement is executed if it presents, and the whole search statement finishes. 
+
+In other words, a search statement searches through a list data and find the first element in the list that meets the search criterion (i.e. the bool expression) to perform the body statement; if no element in the list that meets the criterion, it will do the default statement. 
+
+For example, consider the following code fragment. It will search for the first element in an integer list that is defined and whose value is greater than 10. Once the element is find, it will double the value. If no element in the list is greater than 10, it will add an element of value 12 to the list (at the end).  
+
+\example{
+\texttt{ var myList: IntList; } 
+
+\texttt{ ... }
+
+\texttt{ Search (var x in myList | x.isDefined \&\& x >10 ) \{ }
+
+\texttt{ ~~~~~ x := x+x; }
+
+\texttt{ \} Default \{ }
+
+\texttt{ ~~~~~ myList.addElement(12); }
+
+\texttt{ \} }
+}
+
+\subsection{Case Statements}
+
+\JavaCCsyntax{
+CaseStatement \defs
+
+\tab \tml{CASE} \lit{(} Exp \lit{)} \lit{\{}
+
+\tab \rpt{Exp \lit{->} \lit{\{} Statement \lit{\}} \lit{;}}
+
+\tab \opt{\tml{ELSE} \lit{\{} Statement \lit{\}} \lit{;} }
+
+\tab \lit{\}}%
+}
+
+The case statement resembles the switch statement of traditional programming
+languages. It consists of a test expression, a sequence of (guard
+expression, statement) pairs, and an optional standalone ``else'' statement.
+The test expression is first evaluated and checked against the guard 
+expressions one by one. If it is equal to a guard expression then the 
+corresponding statement is executed. If
+more than one guard expression matches, then only the statement corresponding
+to the first is executed. If no guard expressions match, then the else
+statement is executed. If no guard expressions match and there is no else-clause, it is equivalent to skip. 
+
+The guard expressions must of the same datatype of the test expression. 
+
+\chapter{Caste Declarations}\label{sect:CasteDec}
+
+The concept of caste is analogous to the concept of class in object-oriented
+languages. Similar to class, a caste is a template of agents, and also a classifier of agents. 
+However, caste differs from class in both structure and dynamic behaviour. 
+
+\section{Structure of Caste and Agent} 
+
+\JavaCCsyntax{
+	
+\tab CasteDeclaration \defs 
+
+\tab \opt{Imports}
+
+\tab \opt{Uses}
+
+\tab \tml{CASTE} CasteName=Identifier \lit{(} \opt{ParamDeclaration} \lit{)}
+
+\tab \opt{\tml{EXTEND} CasteName} \lit{\{} 
+	
+\tab \rpt{ ObserveDeclaration \lit{;}}
+
+\tab \rpt{TypeDef \choice ConstDef }
+
+\tab \rpt{VarDeclaration \lit{;}}
+
+\tab \rpt{ActionDeclaration}
+
+\tab InitDeclaration
+
+\tab RoutineDeclaration
+
+\tab ~~\lit{\}}
+
+\tab  \tml{EOF}
+}
+
+The Imports clause lists the names of definition packages used in the declaration of the caste. 
+The Uses clause lists the caste names of those castes that this caste declaration depends on. 
+Data types and constant definitions can be made within a caste declaration as a local definitions and their scope is within the caste. 
+
+\JavaCCsyntax{
+Uses \defs 
+\tab \tml{USES} CasteNameList \lit{;"}
+
+\tab CasteNameList \defs
+\tab CasteName \rpt{\lit{,} CasteName}
+
+Imports \defs  \tml{IMPORT} DefPackNameList \lit{;}
+
+DefPackNameList \defs  DefPackName \rpt{ \lit{,} DefPackName}
+}
+
+%Here, each identifier in the IdURL list of the Uses clause must be either an 
+%identifier of a definition package or a caste name. The location of the definition package or the caste can be specified by an URL, 
+%if it is not on the default locations known by the compiler. 
+%
+%The key components of a caste are defined as follows. 
+
+\section{Caste Parameters}
+
+The optional parameter list in the head of caste declaration defines the parameters used for initialising agents when they are created.
+
+\JavaCCsyntax{
+ParamDeclaration\defs 
+
+\tab Name\_and\_Type \rpt{ \lit{,} Name\_and\_Type}
+
+Name\_and\_Type \defs
+
+\tab CasteParameter=Identifier \lit{:} TypeName
+}
+
+Each identifier in the parameter list defines a caste parameter whose scope is within the caste. Its type is given in the \texttt{TypeExp}. Its value is determined when an agent of the caste is created by the corresponding expression as the actual parameter. The value of a caste parameter cannot be modified. 
+
+\section{Environment Declarations}\label{sect:EnvrionmentDec}
+
+\JavaCCsyntax{
+	
+ObserveDeclaration \defs
+
+\tab \tml{OBSERVE} CasteName \rpt{ \lit{,} CasteName} \lit{;}
+}
+	
+The environment declarations in a caste declaration defines a set of other agents whose actions
+can be observed by the agent of this caste and the values of whose state variables 
+can be obtained. An observe-clause declares that the agent observes the agents of the castes listed in the declaration. In other words, it subscribes the events generated by the agents of the castes. 
+When an agent in an observed caste takes a visible action, this agent can capture the event and may trigger 
+actions in the agent itself, such as specified by a when-statement or a till-statement. 
+
+\section{State Variable Declarations}
+
+\JavaCCsyntax{
+VarDeclaration \defs
+
+\tab  \opt{\tml{STATE}} \tml{VAR} Var=Identifier \lit{:} TypeName \lit{;}
+}
+
+State variable declarations are used to define the variables that represent the state of the agent. The value of a state variable can be viewed by other agents if it is declared as visible by the keyword \emph{state}, but it cannot be modified by any other agents. 
+
+Each state variable declaration defines one variable of a particular
+type. State variables are global in the sense that it is accessible in the init and body statements throughout the whole lifecycle of the agent. 
+
+\example{
+\texttt{var status:string;}
+
+\texttt{state var eMoji: string;}
+}
+
+For example, in the above, the variable status is not visible by other agents. But, the value of the variable eMoji can be observed by oather agents.
+
+\section{Action Declarations}
+
+An action declaration declares an actions that the agent can perform. The syntax for declaring the actions are as follows. 
+
+\JavaCCsyntax{
+ActionDeclaration \defs
+
+\tab \opt{\tml{INTENAL}} \tml{ACTION} ActionName=Identifier \lit{(} \opt{ParamDeclaration} \lit{)} 
+
+\tab \lit{\{}  Statement \lit{\}}
+}
+
+An action can have any number of parameters, which are listed with their types.
+Each action has a statement as its body. When an action it taken by the agent, the body is executed. The following is an example of action declaration. When the execution of the action body finishes, an event is generated and delivered to all agents that observes this agent, if the action is not an internal action. 
+
+\example{
+\texttt{ ...}
+
+\texttt{Var messageLog : String;}
+
+\texttt{ ...}
+
+\texttt{messageLog := "";}
+
+\texttt{~~~~...}
+
+\texttt{action say (word: String) \{ }
+
+\texttt{~~messageLog := messageLog + word  + ";" }
+
+\texttt{\} }
+}
+
+\section{Initialisation}
+
+The initialisation clause defines how agents of the caste are initialised. The syntax is given below. 
+
+\JavaCCsyntax{
+InitDeclaration \defs 
+
+\tab \tml{INIT} \lit{\{} Statement \lit{\}}
+}
+
+The initialisation statement that is executed once when the agent is created. 
+
+\section{Body}
+
+The body clause defines the body of the agent, i.e. the code for agents of the caste to execute. It consists of a statement and optionally some local variable declarations, and local action declaration. 
+
+\JavaCCsyntax{
+RoutineDeclaration \defs
+
+\tab \tml{BODY} \lit{\{} Statement \lit{\}}
+}
+
+
+The body statement of the caste are repeatedly executed by the agents of the caste until the agent is destroyed or quits from the caste. The state variables declared within the body are called local variables. Similarly, the actions declared with the body are local actions. The scope of the local state variables and local actions is within the body of the caste. Performing a local action will not generate any externally visible events. 
+
+%\section{Example}
+
+For example, the following is a "Hello world!" program in CAOPLE.
+ 
+\example{
+\texttt{caste Peer()\{}
+
+\texttt{~~action say(word: string) \{  \} }
+
+\texttt{~~init \{ say("Hello world!"); \} }
+
+\texttt{~~body \{ \} }
+
+\texttt{\}}
+}
+
+In this example, an agent of \texttt{Peer} caste is capable of performing the action \texttt{say}. When an agent of this caste is created, it will execute the initialisation statement, i.e. perform the action \texttt{say("Hello world!")}. It will then execute the body statement. In this case, it is empty; thus, the agent will do nothing after say "Hello world!". 
+
+\section{Inheritance}\label{sect:Inheritance}
+
+The \texttt{Extend}-clause gives the caste from which it inherits.
+
+If a caste inherits another caste, then it logically contains all the environment,
+state variables, actions of the inherited caste and the body code in addition to its own. 
+
+If a variable is declared with a name that is already in the inherited caste, the new declaration will over-write the existing inherited variable declaration. Similar, if an action is declared with a name already in the inherited caste as an action name, the new declaration over-writes the inherited action. The identifiers used in the caste declaration and the castes from which it inherits
+must all be disjoint unless the new declaration is an over-writing. 
+
+The inheritance relations between castes must not be cyclic. 
+
+For example, consider the following caste declaration. 
+
+\example{
+\texttt{caste GreetingPeer() inherits Peer;}
+
+\texttt{~~observe Peer;}
+
+\texttt{~~init \{ super(); \} }
+
+\texttt{~~body \{}
+
+\texttt{~~~~when exist x in Peer: say("Hello world!") \{ }
+
+\texttt{~~~~~~say("Welcome to the world!")}
+
+\texttt{~~~~\} }
+
+\texttt{~~\}}
+
+\texttt{\}}%
+}
+
+Note that, when a caste A inherits caste B, the initialisation of the caste B is performed when the super-statement is executed. 
+
+A \texttt{GreetingPeer} agent will say "Hello world!" as \texttt{Peer} agents do because of the execution of the super() statement in the init-statement of caste GreetingPeer. In addition, whenever a \texttt{Peer} agent says "Hello world!", it will respond by saying "Welcome to the world!". Note that, a \texttt{Greetingpeer} agent is also a \texttt{Peer} agent, since \texttt{GreetingPeer} is a subcaste of \texttt{Peer}. 
+Thus, \texttt{GreetingPeer} agent's behaviour is effectively equivalent to the following. 
+
+\example{
+\texttt{caste Peer;}
+
+\texttt{~~observe Peer;}
+
+\texttt{~~action say(word:string);}
+
+\texttt{~~init \{ say("Hello world!"); \}}
+
+\texttt{~~body\{ }
+
+\texttt{~~~~when exist x in Peer: say("Hello world!") \{ }
+
+\texttt{~~~~~~say("Welcome to the world!")}
+
+\texttt{~~~~\}}
+
+\texttt{~~\}}
+
+\texttt{\}}%
+
+}
+
+\chapter{Overall Structure of Programs}
+
+A program in CAOPLE comprises a set of caste declarations and a set 
+of definition packages. 
+
+\JavaCCsyntax{
+Program \defs
+
+\tab \rpt{ DefinitionPackage \choice  CasteDeclaration}
+}
+
+Each caste declaration defines a type of agents that can execute
+and interact with other agents. All agents are equal in the sense that there 
+is no "main" caste/agent in the program, and although an agent can create 
+other agents, an agent cannot destroy other agents. 
+
+To enable complicated data passed between agents, data types and 
+constant values can be declared in definition packages and used in the 
+declaration of castes and other definition packages.  
+
+Caste declarations and definition packages are compilation units. The object code of a caste declaration can be deployed independent of any caste that it uses and definition packages it imports to a machine that runs a communication engine (CE) of the CAVM virtual machine. Instances of the caste can be created on any machine in the network that runs a logic execution engine (LEE) of the CAVM virtual machine. 
+
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+We would like to thank Dr. Bin Zhou of the National University of Defence Technology (NUDT), China, who, through close collaboration with Hong Zhu, developed a virtual machine called CAVM for the implementation of agent-oriented programming language while he was visiting Oxford Brookes University in 2006. The authors are also grateful to Mr. Tomas Fantou, who wrote a compiler for a core subset of an earlier version of the language in 2013 as his MSc dissertation at Oxford Brookes University. The development of CAOPLE language has significantly benefited from Hong Zhu's the previous experiences in the development and implementation of another agent-oriented programming language called SLABSp and agent-oriented modelling language CAMLE. SLABSp was a result of Zhu's collaboration with Prof. Ji Wang and Mr. Rui Shen of NUDT. CAMLE is the result of Dr. Lijun Shan's MSc dissertation project supervised by Hong Zhu. CAOPLE, SLABSp and CAMLE are all based on the conceptual model of multi-agent systems proposed in SLABS, which is a formal specification language developed by Hong Zhu for developing multi-agent systems. The authors are also grateful to the Applied Formal Methods (AFM) research group, whose members, students, and visitors, especially Dr. Bin Zhou, and Prof. Xinjun Mao, have contributed to the development of the language in various ways, such as participating in seminar discussions and commenting on the research papers and documentation of the language. 
+
+From December 2014 to December 2015, Dr. Chengzhi Xu from the School of Computer Science, Hubei University of Technology, Wuhan, China, joined the project team while he was visiting the AFM research group at Oxford Brookes University. Chengzhi rewrote the virtual machine in Java and the complier with JavaCC and Java. During this process, he made a significant change to the syntax of the language. Dr. Desheng Liu, also a visitor from China, joined the project in March 2015 and developed an integrated development environment for CAOPLE language based on Chengzhi's in-house tools for his testing of virtual machine and compiler. Desheng also rewritten the parser of SLABS formal specification language and integrated it into CIDE. 
+
+\end{document}
