@@ -1,0 +1,66 @@
+
+\chapter*{Preface of Version 1}
+\addcontentsline{toc}{chapter}{Preface of Version 1} 
+
+CAOPLE stands for Caste-centric Agent-Oriented Programming Language
+and Environment. It is an experimental programming language developed 
+by the the Applied Formal Methods (AFM) Research Group \footnote{The reseach 
+group has evloved into a research group called Cloud Computing and Cybersecurity 
+(CCC) in March 2020} at the Oxford 
+Brookes University, Oxford, England. It is a part of the research agenda of  
+AFM on agent-oriented software development methodology for disciplined 
+software engineering of internet-based computing. 
+
+Agent-orientation is a novel programming paradigm proposed as an 
+alternative to object-orientation. In this paradigm,
+a program during execution time consists of interacting agents rather
+than interacting objects. While agent-orientation inherits a number 
+features from object-orientation, there are several fundamental 
+differences between them. 
+
+One of the key distinction is the mode of interaction.
+An object interacts with another object by sending a message to it.
+That message is guaranteed to cause the object to execute the corresponding
+method. The interaction mechanism is therefore a control mechanism. In contrast, an
+agent interacts with another agent by generating events and processing events. 
+For example, an agent may requesting a service by generating an event, which 
+may or may not be observed by the agent that provides the service. Even if the 
+service provider agent observed the event, it may or may not take the action as 
+requested in response. For example, it may reject the service request due to 
+the request is considered as unauthorised, or simply because the workload on 
+the server is too higher. In other words, the interaction mechanism is a cooperation 
+mechanism. 
+
+Request events may be thought to be analogous to method calls, but they are
+asynchronous, whereas method calls are synchronous. This
+paradigm is particularly suited to distributed computing, where messages
+may not reach their targets. It also suited to parallel computing, where the calling
+object should not suspend while waiting for the callee to finish. In both cases, a 
+message is often to be broadcasted to many receivers as an action can be 
+observed by many other agents rather than as in object oriented where 
+a method call only targets one object. 
+Both of forms of computing have been the subject of intense
+study over the past few decades, but have now become far more important
+with the advent of web services and multi-core computing.
+
+In CAOPLE, each agent is an instance of a caste, which can therefore
+be thought of as a template for creating agents; the relationship
+is analogous to that between objects and classes. The major difference
+between classes and castes though is that an agent can change its
+caste membership during its life-time whereas an object cannot. 
+Many other agent-oriented
+programming languages do not have caste, or anything similar, as a
+classification mechanism so the concept of caste is an important contribution
+by providing a means of modularity. 
+
+Another similarity to object oriented programming languages, CAOPLE is 
+an imperative programming language while most other agent-oriented 
+programming languages are declarative or hybrid (i.e. a combination of 
+imperative and declarative facilities). 
+
+Finally, CAOPLE is a pure agent-oriented programming language, in which 
+a program only contains agents rather than a mixture of agents and 
+objects as many other agent-oriented programming languages. 
+
+This manual intends to give a brief but comprehensive definition of the language 
+rather than an introduction to agent-oriented programming. 

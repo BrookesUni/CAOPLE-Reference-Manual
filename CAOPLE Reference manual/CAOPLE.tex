@@ -59,7 +59,7 @@ Programming Language CAOPLE\\
 %{\normalsize (Version 2.0)}
 %{\normalsize (Version 2.1)}
 %{\normalsize (Version 2.2)}
-{\normalsize (Version 2.5)}
+{\normalsize (Version 3.0)}
 }
 %\date{27 Sept. 2016}
 %\date{Oct. 29, 2016}
@@ -67,7 +67,7 @@ Programming Language CAOPLE\\
 %\date{June 12, 2017}
 %\date{Nov. 18, 2017}
 %\date{May 10, 2018}
-\date{March 25, 2020}
+\date{April 6th, 2020}
 
 %Changes of Version 2.3 from Version 2.2: 
 % (1) The till statement is enhanced. 
@@ -88,97 +88,87 @@ Oxford, OX33 1HX, UK
 
 \tableofcontents
 
-\chapter*{Preface of Version 1}
-\addcontentsline{toc}{chapter}{Preface of Version 1} 
-%\footnote{Some minor revisions have been made for clarification.}
+%\input{PrefaceOfVersion1.tex}
 
-CAOPLE stands for Caste-centric Agent-Oriented Programming Language
-and Environment. It is an experimental programming language developed 
-by the Cloud Computing and Cybersecurity (CCC) Research Group
-\footnote{ Formerly known as the Applied Formal Methods (AFM) Research Group} at the Oxford 
-Brookes University, Oxford, England. It is a part of the research agenda of  
-CCC (AFM) on agent-oriented software development methodology for disciplined 
-software engineering of internet-based computing. 
+%\input{PrefaceOfVersion2.tex}
 
-Agent-orientation is a novel programming paradigm proposed as an 
-alternative to object-orientation. In this paradigm,
-a program during execution time consists of interacting agents rather
-than interacting objects. While agent-orientation inherits a number 
-features from object-orientation, there are several fundamental 
-differences between them. 
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface} 
 
-One of the key distinction is the mode of interaction.
-An object interacts with another object by sending a message to it.
-That message is guaranteed to cause the object to execute the corresponding
-method. The interaction mechanism is therefore a control mechanism. In contrast, an
-agent interacts with another agent by generating events and processing events. 
-For example, an agent may requesting a service by generating an event, which 
-may or may not be observed by the agent that provides the service. Even if the 
-service provider agent observed the event, it may or may not take the action as 
-requested in response. For example, it may reject the service request due to 
-the request is considered as unauthorised, or simply because the workload on 
-the server is too higher. In other words, the interaction mechanism is a cooperation 
-mechanism. 
+This document defines the syntax and semantics of the CAOPLE programming language. 
 
-Request events may be thought to be analogous to method calls, but they are
-asynchronous, whereas method calls are synchronous. This
-paradigm is particularly suited to distributed computing, where messages
-may not reach their targets. It also suited to parallel computing, where the calling
-object should not suspend while waiting for the callee to finish. In both cases, a 
-message is often to be broadcasted to many receivers as an action can be 
-observed by many other agents rather than as in object oriented where 
-a method call only targets one object. 
-Both of forms of computing have been the subject of intense
-study over the past few decades, but have now become far more important
-with the advent of web services and multi-core computing.
+CAOPLE is a programming language developed by the Cloud Computing and Cybersecurity (CCC) Research 
+Group\footnote{ Formerly known as the Applied Formal Methods (AFM) Research Group} at the Oxford 
+Brookes University, Oxford, England. It is a novel programming language for distributed and 
+parallel computing based on the \emph{service agent model} of distributed and parallel computing 
+first proposed at the beginning of the new millennium. The model is based on a theoretical analysis 
+of the nature of internet-based computing and its requirements on software development. The model 
+was initially called ``\emph{caste-centric agent-oriented}" since the notion of service-oriented 
+computing had not emerged, at least not widely known. The phrase ``caste-centric'' in the name was 
+to distinguish the model from the so-called ``intelligent agent'' model, which was a hot topic of research 
+at the time and also called ``agent-oriented''. Indeed, caste was and is still the key concept of 
+the model which distinguishes itself from all other models and now shows its suitability for 
+developing software in microservices architecture. 
 
-In CAOPLE, each agent is an instance of a caste, which can therefore
-be thought of as a template for creating agents; the relationship
-is analogous to that between objects and classes. The major difference
-between classes and castes though is that an agent can change its
-caste membership during its life-time whereas an object cannot. 
-Many other agent-oriented
-programming languages do not have caste, or anything similar, as a
-classification mechanism so the concept of caste is an important contribution
-by providing a means of modularity. 
+Since then, much research has been done as a pure theoretical study, including a formal specification 
+language called SLABS, which is where the model first defined, a modelling language called CAMLE and  
+its automated modellng tools, the scenario calculus, which is a formal logic for reasoning about 
+multi-agent systems on their emergent behaviours, and of course programming languages. After several 
+previous experiments with the design and implementation of programming languages based on this 
+computation model, CAOPLE was designed for cloud computing around year 2005 and 2006. For a long time, it 
+was not considered as of any potential for practical uses until around 2015. Around that time, 
+microservices become widely accepted by the IT industry for cloud native applications and regarded 
+as the most appropriate architectural style for cloud native applications. Our theoretical model 
+suddenly finds a perfect match to microservices. 
 
-Another similarity to object oriented programming languages, CAOPLE is 
-an imperative programming language while most other agent-oriented 
-programming languages are declarative or hybrid (i.e. a combination of 
-imperative and declarative facilities). 
+The microservices architectural style is only a part of a solution to many teething problems in the 
+development and maintenance of cloud native applications. In recent years, the world has seem the 
+boom of container technology like Docker to 
+support the execution of microservices, and Kubernetes for the management of containers. DevOps is 
+also rapidly increasing its adaptation by the IT industry, especially those develop cloud native 
+applications. However, a main barrier remains. 
+That is, how to write code in the microservice architecture to be executed on the cloud. 
 
-Finally, CAOPLE is a pure agent-oriented programming language, in which 
-a program only contains agents rather than a mixture of agents and 
-objects as many other agent-oriented programming languages. 
-%\comment{Should we mention other agent-oriented programming languages?}
+CAOPLE provides a potential solution to the coding problem. Moreover, our research also 
+finds that CAOPLE can solve the problems that container technology solves but in a much nicer way.
+And, it can simplify some of the problems that DevOps solves if the language is supported by an integrated 
+DevOps environment like CIDE for CAOPLE. The following are a few of the things that IT industry regards as 
+highly desirable that CAOPLE achieves together CIDE.
+\begin{itemize}
+  \item Code once run anywhere, rather than package once run on the same platform as containers do.
+  \item Fast creation of instances of microservices, but CAOPLE can create instances in the scale of 
+  milliseconds, which is 10s times faster than containers;
+  \item Continuous testing, continuous integration and continuous deployment, but we go further to 
+  continuous debugging; 
+  \item Whoever develops, who owns and who operates, because operations of microservices is made much 
+  simpler and easier; 
+  \item Seamless process that starts from domain driven analysis and design to coding, because CAOPLE 
+  and its underlying computation model enables thinking at higher level of abstraction in a metaphor 
+  of the application domain;
+  \item Configuration as code; but we also have deployment as code. 
+\end{itemize}
 
-This manual intends to give a brief but comprehensive definition of the language 
-rather than an introduction to agent-oriented programming. 
+CAOPLE itself is under continuous evolution. New features are added, syntax are revised, and implementation
+is modified continuously. This is the third edition of this reference manual. The main changes are: 
+\begin{itemize}
+  \item New structured statements of the Search statement, Forall statement and Till statement;
+  \item New operations of predefined datatypes, such as the \texttt{starts\_with}, \texttt{ends\_with}, contains, replace operations 
+  on the String data type; and the \texttt{index\_of}, contains operation on list data types; 
+  \item New type conversion operators, such as the \texttt{value\_of} operation to convert a value of string data type to a 
+  value of the structured data type, and \texttt{to\_real}, \texttt{to\_int} for converting between integer and real values. 
+\end{itemize}
 
-\chapter*{Preface of Version 2}
-\addcontentsline{toc}{chapter}{Preface of Version 2}
+The above changes are at the statement and operators level, but they bring observable improvements in the 
+usability of the language. More significant changes of the language is planned and will be announce in the 
+next version of the language hopefully in the summer. 
 
-Since the writing of CAOPLE manual version 1 in the summer of 2014, 
-the AOP research team has made substantial progress in the development of the 
-language. The virtual machine CAVM has been redeveloped written in Java and 
-a compiler has also been re-written with JavaCC and Java. An integrated development 
-environment called CIDE has also been developed. As a consequence, the language has 
-changed significantly in its syntax. These changes are now reflected in this version of the
-language manual. 
+\vspace{+10mm}
 
-It is worth noting that during this period of time, the microservices architecture of service-oriented computing 
-has become a hot topic of research and widely accepted by industry for the development of service-oriented systems. 
-Microservices is a software architecture style in which a large complex software application is decomposed into many services, each of small size (hence the word \emph{micro} in its name). These services can be independently deployed to a cluster of computers and duplicated to achieve scalability, load balance and system-performance optimisation. Each micro-service runs in its own process and interacts with other services through lightweight communication mechanisms. In our research paper titled ``\emph{CAOPLE: A Programming Language for Microservices SaaS}'' \footnote{Chengzhi Xu, Hong Zhu, Ian Bayley, David Lightfoot, Mark Green and Peter Marshall, CAOPLE: A Programming Language for Microservices SaaS, in Proceedings of \emph{the 10th IEEE International Conference on Service Oriented System Engineering (SOSE 2016)}, 29 March - 1 April 2016, Oxford, England, UK.  IEEE Computer Society Press, 2016.}, we argued that CAOPLE is particularly suitable for programming software in the microservices architecture. Below we briefly summarise the argument. 
-
-In the literature of service-oriented computing, the word ``service'', and similarly the word ``microservice'', has two meanings. First, a service is the functionality provided by a computer system and delivered to the users; for example, as Singh and Huhns stated \footnote{Singh, P. M., and Huhns, N. M.,  \emph{Service-Oriented Computing: Semantics, Processes, Agents.} Wiley, 2005.}. Second, the word service also refers to the computational entities that provide the services in the first sense. Here, we separate these two concepts by using the word service only to refer to the functionalities that a computational system provides, while the computational entities that provide such functionality are called ``agents''. In other words, agents are service providers. Of course, an agent may well need services from other agents. Thus, they can be, and often are, service requesters, too. 
-
-In the context of the microservices architecture, the word microservice also bears two further meanings: first, a set of microservices can be identical copies of a ``service'', where each copy is a runtime computational entity. Second, given the existence of multiple copies running in a system, a microservice is also referred to as a template from which instances can be generated and deployed to different servers. In our conceptual model, the notion of \emph{caste} captures perfectly the meaning of a template from which runtime instance are instantiated. The implementation of CAOPLE enables that instances of a caste run not just on the same machine, but, as a norm to be run over a computer network. 
-
-Therefore, the notion of agents and their classifier caste provides a perfect conceptual model of microservices. 
-
-Microservices architecture are not easy to develop, deploy and operate because the complexity of the system increases tremendously when it is decomposed into a large number of micro scale services. With the wide acceptance of microservices architecture in industry for cloud computing, container technologies, such as docker, has been developed to support the deployment of software in microservice architecture over a large scale computer network and monitoring the operation of the system. How to develop such systems is still an open problem. CAOPLE addresses this by significantly reducing the complexity of programming distributed systems with a higher level of abstraction and well-defined conceptual model of microservices architecture so that a system in microservices architecture can be represented in a nice model in a natural metaphor. Moreover, its network transparency make the deployment, testing and debugging distributed system less difficult than any existing programming languages. Therefore, CAOPLE as a new programming language providers an alternative approach to the container technology currently used in the industry. In our another research paper, which is titled ``\emph{CIDE: An Integrated Development Environment for Microservices}'' \footnote{Desheng Liu,  Hong Zhu, Chengzhi Xu,  Ian Bayley, David Lightfoot, Mark Green and Peter Marshall, CIDE: An Integrated Development Environment for Microservices, in Proceedings of \emph{2016 IEEE International Conference on Services Computing (SCC 2016)},  27 June - 2 July 2016, San Francisco, CA, USA. IEEE Computer Society Press, 2016.},  we have proposed a new generation of integrated development environment that integrates IDE with new functionalities that are currently offered by deployment and operation tools to enable the so-call \emph{shift-to-the-left} principle of DevOps software development philosophy. A prototype of an IDE for CAOPLE programming language called CIDE has been developed. Our own experiences with writing example codes show that developing distributed and parallel applications in CAOPLE with CIDE can be much easier, faster, and the code is more readable and testable. 
-
-Finally, it is worth noting that CAOPLE is not just for microservices. It represents a new paradigm of programming that also suitable for other types of parallel computing and distributed computing. 
+\noindent{\emph{Hong Zhu\\
+Professor of Computer Science\\
+Chair of CCC\\
+6th April 2020, Oxford
+}}
 
 \chapter{Meta-Notation} \label{sect: Ch2}
 
